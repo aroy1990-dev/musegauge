@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "musegauge/request.schema.json",
+  "title": "Request from core to plugin, request.json (spec section 6.3)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "run_id", "metric_id", "options", "device", "seed", "workers",
+               "batch_size", "generated", "reference", "paths"],
+  "properties": {
+    "schema": {"const": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "metric_id": {"type": "string", "pattern": "^[a-z0-9]+\\.[a-z0-9-]+@[0-9]+$"},
+    "options": {"type": "object"},
+    "device": {"enum": ["auto", "cpu", "cuda", "mps"]},
+    "seed": {"type": "integer"},
+    "workers": {"type": "integer", "minimum": 1},
+    "batch_size": {"type": ["integer", "null"], "minimum": 1},
+    "generated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dir", "clips"],
+      "properties": {
+        "dir": {"type": "string", "minLength": 1},
+        "clips": {"type": "array", "items": {"$ref": "#/$defs/clip"}}
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "dir", "n_clips"],
+      "properties": {
+        "kind": {"enum": ["dir", "bundled", "none"]},
+        "name": {"type": ["string", "null"]},
+        "dir": {"type": ["string", "null"]},
+        "n_clips": {"type": ["integer", "null"], "minimum": 0}
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["work_dir", "weights_dir"],
+      "properties": {
+        "work_dir": {"type": "string", "minLength": 1},
+        "weights_dir": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "$defs": {
+    "clip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clip_id", "file", "prompt", "duration_s", "sample_rate_hz", "channels"],
+      "properties": {
+        "clip_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,128}$"},
+        "file": {"type": "string", "minLength": 1},
+        "prompt": {"type": ["string", "null"]},
+        "duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "sample_rate_hz": {"type": "integer", "minimum": 1},
+        "channels": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

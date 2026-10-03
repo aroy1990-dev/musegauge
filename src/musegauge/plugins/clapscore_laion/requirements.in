@@ -1,0 +1,11 @@
+# Upstream package (spec section 9.4)
+laion-clap==1.1.7
+# laion-clap does not list huggingface_hub (spec 9.4). Without an upper bound, huggingface_hub
+# 2.x made the resolver pick transformers 4.12.2, whose tokenizers 0.10.3 has no wheel for
+# Python 3.11 and failed to build (docs/UPSTREAM_NOTES.md). Constraint agreed with Roy.
+huggingface_hub<1.0
+# torch, torchaudio and torchvision as a matched set (spec section 4.2). laion_clap imports
+# torchvision (laion_clap/training/data.py) without declaring it.
+torch==2.7.0
+torchaudio==2.7.0
+torchvision==0.22.0

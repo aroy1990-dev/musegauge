@@ -1,0 +1,51 @@
+schema: 1
+plugin_id: aesthetics_audiobox
+family: aesthetics
+description: "Audiobox Aesthetics scores (CE, CU, PC, PQ) for each clip, through audiobox-aesthetics"
+kind: clip
+python: "3.11"
+requirements_in: requirements.in
+locks:
+  linux-x86_64: locks/linux-x86_64.txt
+smoke: ["python", "-c", "import audiobox_aesthetics.infer"]
+system_tools:
+  required: []
+  optional: []
+needs:
+  reference: false
+  prompts: false
+reference_modes: []
+bundled_references: []
+upstream:
+  package: audiobox-aesthetics
+  version: "0.0.4"
+trust_remote_code: false
+runtime_downloads: [huggingface]
+metrics:
+  - id: aesthetics.audiobox@1
+    variant: audiobox
+    options: {}
+    primary: CE
+    definition: >-
+      Audiobox Aesthetics predictions for each clip on four axes: Content Enjoyment (CE),
+      Content Usefulness (CU), Production Complexity (PC) and Production Quality (PQ), as computed
+      by audiobox-aesthetics 0.0.4 (initialize_predictor() then predictor.forward) with the weights
+      of the Hugging Face repo facebook/audiobox-aesthetics. The tool resamples to 16 kHz mono,
+      scores 10 s windows with a 10 s hop (last window zero padded) and averages the windows
+      weighted by their real length. The harness reports the mean, standard deviation and a
+      bootstrap interval over clips.
+    licence:
+      code:
+        name: CC-BY-4.0
+        status: read_from_file
+        source: "LICENSE inside the audiobox-aesthetics 0.0.4 wheel (Creative Commons Attribution 4.0 International)"
+        notes: "The README inside the same wheel says portions from https://github.com/microsoft/unilm are under the MIT licence."
+      weights:
+        name: null
+        status: unknown
+        check_urls: ["https://huggingface.co/facebook/audiobox-aesthetics"]
+        notes: "The model card metadata said cc-by-4.0 when read on 2026-10-03. Not yet confirmed by Roy."
+      data:
+        name: null
+        status: not_applicable
+      commercial_ok: unknown

@@ -1,0 +1,82 @@
+# Every push and pull request (spec section 11.7, as changed at GATE 3, amendment A17):
+# the fast test set (it includes the fake plugins), the wheel checks, and the slim image build.
+# Real plugins are not run on hosted runners. Not run yet: the repository has no GitHub remote (D3).
+name: ci
+on: [push, pull_request]
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12"]
+    env:
+      UV_PYTHON_DOWNLOADS: never   # fast fakes use the runner's own Python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install uv
+        run: python -m pip install uv
+      - name: Install musegauge with dev tools
+        run: |
+          uv venv --python ${{ matrix.python }} .venv
+          uv pip install --python .venv/bin/python -e ".[dev]"
+      - name: ruff
+        run: .venv/bin/ruff check
+      - name: Fast tests
+        run: .venv/bin/pytest -m "not slow and not network and not gpu and not docker"
+      - name: Build the wheel
+        run: uv build
+      - name: Check the wheel contents
+        run: |
+          python - <<'PY'
+          import glob, zipfile, pathlib
+          (whl,) = glob.glob("dist/*.whl")
+          names = set(zipfile.ZipFile(whl).namelist())
+          root = pathlib.Path("src")
+          needed = [str(p.relative_to(root)) for p in root.glob("musegauge/plugins/*/manifest.yaml")]
+          needed += [str(p.relative_to(root)) for p in root.glob("musegauge/plugins/*/locks/*.txt")]
+          needed += [str(p.relative_to(root)) for p in root.glob("musegauge/suites/*.yaml")]
+          needed += ["musegauge/_runtime/musegauge_runtime/run.py", "musegauge/_runtime/musegauge_runtime/__init__.py"]
+          missing = [n for n in needed if n not in names]
+          print(f"{len(needed)} required files, {len(missing)} missing")
+          assert not missing, missing
+          PY
+      - name: Install the wheel in a clean environment and run it
+        run: |
+          python -m venv /tmp/clean
+          /tmp/clean/bin/pip install dist/*.whl
+          /tmp/clean/bin/musegauge --version
+          /tmp/clean/bin/musegauge list
+          /tmp/clean/bin/musegauge doctor
+
+  slim-image:
+    # Builds the image only; never pushes (D7). The fake plugins run with no network.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the wheel
+        run: |
+          python -m pip install uv numpy soundfile
+          uv build --wheel
+      - name: Build the slim image
+        run: docker build -f docker/Dockerfile --target slim -t musegauge:slim .
+      - name: doctor
+        run: docker run --rm musegauge:slim doctor
+      - name: Fake plugins with no network
+        run: |
+          python tests/make_fixtures.py fixtures
+          mkdir -p out && chmod 777 out
+          docker run --rm --network none \
+            -v "$PWD/tests/fake_plugins:/plugins:ro" -e MUSEGAUGE_PLUGIN_PATH=/plugins \
+            -v "$PWD/fixtures:/data:ro" -v "$PWD/out:/out" \
+            musegauge:slim run --generated /data/gen_small --reference /data/ref_small \
+              --metrics fake.clip@1,fake.set@1 --out /out
+          test -f out/results.json
+

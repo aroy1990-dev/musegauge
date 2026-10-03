@@ -1,0 +1,58 @@
+schema: 1
+plugin_id: kad_kadtk
+family: kad
+description: "Kernel Audio Distance through kadtk"
+kind: set
+python: "3.11"
+requirements_in: requirements.in
+locks:
+  linux-x86_64: locks/linux-x86_64.txt
+smoke: ["python", "-c", "import kadtk"]
+# kadtk 1.1.0 never runs sox or ffmpeg (amendment A6).
+system_tools:
+  required: []
+  optional: []
+needs:
+  reference: true
+  prompts: false
+reference_modes: [dir]
+bundled_references: []
+upstream:
+  package: kadtk
+  version: "1.1.0"
+# VGGish loads through torch.hub from github.com/harritaylor/torchvggish (master) (amendment A7).
+trust_remote_code: true
+runtime_downloads: [torch_hub, huggingface]
+metrics:
+  - id: kad.vggish@1
+    variant: vggish
+    options: {model: vggish}
+    primary: kad
+    definition: >-
+      Kernel Audio Distance (an MMD with a Gaussian kernel and kadtk's adaptive bandwidth) between
+      kadtk vggish embeddings of the generated set and a reference folder, as computed by kadtk 1.1.0
+      (`kadtk vggish BASELINE EVAL --csv FILE --device D`). KAD can be below zero.
+    licence:
+      code: {name: MIT, status: read_from_file, source: "LICENSE inside the kadtk 1.1.0 wheel (Copyright (c) 2025 yoonjinxd)"}
+      weights:
+        name: null
+        status: unknown
+        check_urls: ["https://github.com/harritaylor/torchvggish", "https://github.com/tensorflow/models/tree/master/research/audioset"]
+      data: {name: null, status: not_applicable}
+      commercial_ok: unknown
+  - id: kad.clap-laion-music@1
+    variant: clap-laion-music
+    options: {model: clap-laion-music}
+    primary: kad
+    definition: >-
+      Kernel Audio Distance (an MMD with a Gaussian kernel and kadtk's adaptive bandwidth) between
+      kadtk clap-laion-music embeddings of the generated set and a reference folder, as computed by
+      kadtk 1.1.0 (`kadtk clap-laion-music BASELINE EVAL --csv FILE --device D`). KAD can be below zero.
+    licence:
+      code: {name: MIT, status: read_from_file, source: "LICENSE inside the kadtk 1.1.0 wheel (Copyright (c) 2025 yoonjinxd)"}
+      weights:
+        name: null
+        status: unknown
+        check_urls: ["https://huggingface.co/lukewys/laion_clap"]
+      data: {name: null, status: not_applicable}
+      commercial_ok: unknown

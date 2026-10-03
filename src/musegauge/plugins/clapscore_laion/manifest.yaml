@@ -1,0 +1,61 @@
+schema: 1
+plugin_id: clapscore_laion
+family: clapscore
+description: "Cosine similarity between LAION-CLAP audio and prompt embeddings, per clip (harness-defined)"
+kind: clip
+python: "3.11"
+requirements_in: requirements.in
+locks:
+  linux-x86_64: locks/linux-x86_64.txt
+smoke: ["python", "-c", "import laion_clap"]
+system_tools:
+  required: []
+  optional: []
+needs:
+  reference: false
+  prompts: true
+reference_modes: []
+bundled_references: []
+upstream:
+  package: laion-clap
+  version: "1.1.7"
+trust_remote_code: false
+runtime_downloads: [huggingface]
+metrics:
+  - id: clapscore.laion-music@1
+    variant: laion-music
+    options:
+      amodel: HTSAT-base
+      checkpoint_repo: lukewys/laion_clap
+      checkpoint_file: music_audioset_epoch_15_esc_90.14.pt
+      sample_rate_hz: 48000
+      window_s: 10
+      hop_s: 10
+    primary: clap_cosine
+    definition: >-
+      Harness-defined metric, not an upstream one. For each clip that has a prompt: the cosine
+      similarity between the LAION-CLAP audio embedding of the clip and the LAION-CLAP text
+      embedding of its prompt, computed with laion-clap 1.1.7, CLAP_Module(enable_fusion=False,
+      amodel='HTSAT-base') and the checkpoint music_audioset_epoch_15_esc_90.14.pt from the
+      Hugging Face repo lukewys/laion_clap. Audio steps chosen by the harness: librosa.load with
+      sr=48000 and mono=True; a round trip through int16 with laion-clap's float32_to_int16 and
+      int16_to_float32; 10 s windows with a 10 s hop, the last window zero padded; each window
+      embedded with get_audio_embedding_from_data; the window embeddings averaged with weights
+      equal to each window's real length. Text: get_text_embedding([prompt]). One number per
+      clip; the core reports the mean over clips.
+    licence:
+      code:
+        name: CC0-1.0
+        status: read_from_file
+        source: "LICENSE inside the laion-clap 1.1.7 wheel (CC0 1.0 Universal)"
+        notes: "The same wheel's metadata also has the classifier 'License :: OSI Approved :: Apache Software License', which disagrees with the LICENSE file."
+      weights:
+        name: CC0-1.0
+        status: stated_on_page
+        source: "https://huggingface.co/lukewys/laion_clap (model card licence field cc0-1.0, read 2026-10-03)"
+        check_urls: ["https://huggingface.co/lukewys/laion_clap", "https://huggingface.co/FacebookAI/roberta-base"]
+        notes: "The text tower also downloads roberta-base (tokenizer and initial weights) from Hugging Face; its model card licence field said mit on 2026-10-03, not confirmed by Roy."
+      data:
+        name: null
+        status: not_applicable
+      commercial_ok: unknown

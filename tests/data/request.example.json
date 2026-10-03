@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "run_id": "20261002T154501Z-a1b2c3",
+  "metric_id": "fad.vggish@1",
+  "options": {"model": "vggish", "inf": true, "per_clip": false},
+  "device": "auto",
+  "seed": 0,
+  "workers": 4,
+  "batch_size": null,
+  "generated": {
+    "dir": "/abs/path/work/RUN/fad_fadtk/gen",
+    "clips": [
+      {"clip_id": "song_0001", "file": "song_0001.wav", "prompt": "a calm piano melody",
+       "duration_s": 10.0, "sample_rate_hz": 32000, "channels": 1}
+    ]
+  },
+  "reference": {"kind": "bundled", "name": "fma_pop", "dir": null, "n_clips": null},
+  "paths": {"work_dir": "/abs/path/work/RUN/fad_fadtk", "weights_dir": "/abs/path/weights"}
+}

@@ -1,0 +1,93 @@
+schema: 1
+plugin_id: fad_fadtk
+family: fad
+description: "Frechet Audio Distance through fadtk"
+kind: set
+python: "3.11"
+requirements_in: requirements.in
+locks:
+  linux-x86_64: locks/linux-x86_64.txt
+smoke: ["python", "-c", "import fadtk"]
+# fadtk 1.1.0 never runs sox or ffmpeg (amendment A6).
+system_tools:
+  required: []
+  optional: []
+needs:
+  reference: true
+  prompts: false
+reference_modes: [dir, bundled]
+bundled_references: [fma_pop]
+upstream:
+  package: fadtk
+  version: "1.1.0"
+# VGGish loads through torch.hub from github.com/harritaylor/torchvggish (master), which runs
+# code downloaded from that repository (amendment A7).
+trust_remote_code: true
+runtime_downloads: [torch_hub, huggingface]
+metrics:
+  - id: fad.vggish@1
+    variant: vggish
+    options: {model: vggish, inf: true}
+    primary: fad
+    definition: >-
+      Frechet distance between Gaussian fits of fadtk vggish embeddings of the generated set and
+      the reference set (a staged folder, or the fma_pop statistics bundled with fadtk), as
+      computed by fadtk 1.1.0 (`fadtk vggish BASELINE EVAL CSV`). Also reports fad_inf, the FAD-inf
+      extrapolation of `fadtk --inf` (it samples embedding frames at random without a seed, so it
+      changes from run to run), and fad_inf_r2, the fit quality of that extrapolation.
+    licence:
+      code: {name: MIT, status: read_from_file, source: "LICENSE inside the fadtk 1.1.0 wheel (Copyright (c) 2023 Microsoft Corporation)"}
+      weights:
+        name: null
+        status: unknown
+        check_urls: ["https://github.com/harritaylor/torchvggish", "https://github.com/tensorflow/models/tree/master/research/audioset"]
+      data:
+        name: null
+        status: unknown
+        check_urls: ["https://github.com/microsoft/fadtk"]
+        notes: "Applies to the bundled fma_pop statistics (fadtk/stats/fma_pop.npz). With a folder reference, the data is the user's."
+      commercial_ok: unknown
+  - id: fad.clap-laion-music@1
+    variant: clap-laion-music
+    options: {model: clap-laion-music, inf: true}
+    primary: fad
+    definition: >-
+      Frechet distance between Gaussian fits of fadtk clap-laion-music embeddings of the generated set and
+      the reference set (a staged folder, or the fma_pop statistics bundled with fadtk), as
+      computed by fadtk 1.1.0 (`fadtk clap-laion-music BASELINE EVAL CSV`). Also reports fad_inf, the FAD-inf
+      extrapolation of `fadtk --inf` (it samples embedding frames at random without a seed, so it
+      changes from run to run), and fad_inf_r2, the fit quality of that extrapolation.
+    licence:
+      code: {name: MIT, status: read_from_file, source: "LICENSE inside the fadtk 1.1.0 wheel (Copyright (c) 2023 Microsoft Corporation)"}
+      weights:
+        name: null
+        status: unknown
+        check_urls: ["https://huggingface.co/lukewys/laion_clap"]
+      data:
+        name: null
+        status: unknown
+        check_urls: ["https://github.com/microsoft/fadtk"]
+        notes: "Applies to the bundled fma_pop statistics (fadtk/stats/fma_pop.npz). With a folder reference, the data is the user's."
+      commercial_ok: unknown
+  - id: fad.encodec-emb@1
+    variant: encodec-emb
+    options: {model: encodec-emb, inf: true}
+    primary: fad
+    definition: >-
+      Frechet distance between Gaussian fits of fadtk encodec-emb embeddings of the generated set and
+      the reference set (a staged folder, or the fma_pop statistics bundled with fadtk), as
+      computed by fadtk 1.1.0 (`fadtk encodec-emb BASELINE EVAL CSV`). Also reports fad_inf, the FAD-inf
+      extrapolation of `fadtk --inf` (it samples embedding frames at random without a seed, so it
+      changes from run to run), and fad_inf_r2, the fit quality of that extrapolation.
+    licence:
+      code: {name: MIT, status: read_from_file, source: "LICENSE inside the fadtk 1.1.0 wheel (Copyright (c) 2023 Microsoft Corporation)"}
+      weights:
+        name: null
+        status: unknown
+        check_urls: ["https://github.com/facebookresearch/encodec", "https://dl.fbaipublicfiles.com/encodec/v0/encodec_24khz-d7cc33bc.th"]
+      data:
+        name: null
+        status: unknown
+        check_urls: ["https://github.com/microsoft/fadtk"]
+        notes: "Applies to the bundled fma_pop statistics (fadtk/stats/fma_pop.npz). With a folder reference, the data is the user's."
+      commercial_ok: unknown

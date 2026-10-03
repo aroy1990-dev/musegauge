@@ -1,0 +1,10 @@
+schema: 1
+suite_id: t2m-basic
+version: 1
+description: "Text-to-music basics: FAD on the bundled reference, CLAP score, aesthetics"
+metrics:
+  - fad.vggish@1
+  - fad.clap-laion-music@1
+  - clapscore.laion-music@1
+  - aesthetics.audiobox@1
+default_reference: bundled:fma_pop

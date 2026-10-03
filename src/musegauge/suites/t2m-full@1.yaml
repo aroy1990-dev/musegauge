@@ -1,0 +1,11 @@
+schema: 1
+suite_id: t2m-full
+version: 1
+description: "t2m-basic plus KAD. KAD needs reference audio, so give --reference DIR"
+metrics:
+  - fad.vggish@1
+  - fad.clap-laion-music@1
+  - clapscore.laion-music@1
+  - aesthetics.audiobox@1
+  - kad.vggish@1
+  - kad.clap-laion-music@1

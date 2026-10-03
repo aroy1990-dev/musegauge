@@ -1,0 +1,12 @@
+# Upstream tool (spec section 9.5)
+audiobox-aesthetics==0.0.4
+# torch and torchaudio as a matched pair (spec section 4.2, U3)
+torch==2.7.0
+torchaudio==2.7.0
+# audiobox_aesthetics/utils.py imports requests but does not declare it. huggingface_hub 0.x
+# brought it in; from 1.0 it does not. Agreed with Roy 2026-10-03 (docs/UPSTREAM_NOTES.md).
+huggingface_hub<1.0
+requests
+# Gives torchaudio a backend on machines without the FFmpeg libraries. torchaudio still
+# prefers ffmpeg when present. Agreed with Roy 2026-10-03.
+soundfile

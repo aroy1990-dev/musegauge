@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "musegauge/response.schema.json",
+  "title": "Response from plugin to core, response.json (spec section 6.4)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "status", "metric_id", "scores", "clip_scores", "clips_failed",
+               "upstream", "env", "warnings", "timing_s", "error"],
+  "properties": {
+    "schema": {"const": 1},
+    "status": {"enum": ["ok", "error"]},
+    "metric_id": {"type": "string", "pattern": "^[a-z0-9]+\\.[a-z0-9-]+@[0-9]+$"},
+    "scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "value", "kind"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "value": {"type": ["number", "null"]},
+          "kind": {"enum": ["set", "aux"]}
+        }
+      }
+    },
+    "clip_scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["clip_id", "scores"],
+        "properties": {
+          "clip_id": {"type": "string"},
+          "scores": {"type": "object", "additionalProperties": {"type": ["number", "null"]}}
+        }
+      }
+    },
+    "clips_failed": {"type": "array", "items": {"$ref": "#/$defs/clip_failure"}},
+    "upstream": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["package", "version", "invocation"],
+      "properties": {
+        "package": {"type": "string"},
+        "version": {"type": ["string", "null"]},
+        "invocation": {"type": "string"}
+      }
+    },
+    "env": {"type": "object"},
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "message": {"type": "string"}
+        }
+      }
+    },
+    "timing_s": {"type": ["number", "null"], "minimum": 0},
+    "error": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/error"}]}
+  },
+  "$defs": {
+    "clip_failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clip_id", "reason"],
+      "properties": {
+        "clip_id": {"type": "string"},
+        "reason": {"type": "string"}
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "message", "traceback_tail"],
+      "properties": {
+        "type": {"type": "string"},
+        "message": {"type": "string"},
+        "traceback_tail": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

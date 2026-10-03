@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "musegauge/manifest.schema.json",
+  "title": "Plugin manifest, manifest.yaml (spec section 6.2)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "plugin_id", "family", "description", "kind", "python", "requirements_in",
+               "locks", "smoke", "system_tools", "needs", "reference_modes", "bundled_references",
+               "upstream", "trust_remote_code", "runtime_downloads", "metrics"],
+  "properties": {
+    "schema": {"const": 1},
+    "plugin_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "family": {"type": "string", "pattern": "^[a-z0-9]+$"},
+    "description": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["set", "clip"]},
+    "python": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"},
+    "requirements_in": {"type": "string", "minLength": 1},
+    "locks": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
+    "smoke": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "system_tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "optional"],
+      "properties": {
+        "required": {"type": "array", "items": {"type": "string"}},
+        "optional": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "needs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "prompts"],
+      "properties": {
+        "reference": {"type": "boolean"},
+        "prompts": {"type": "boolean"}
+      }
+    },
+    "reference_modes": {"type": "array", "items": {"enum": ["dir", "bundled"]}},
+    "bundled_references": {"type": "array", "items": {"type": "string"}},
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "version"],
+      "properties": {
+        "package": {"type": "string"},
+        "version": {"type": "string"}
+      }
+    },
+    "trust_remote_code": {"type": "boolean"},
+    "runtime_downloads": {"type": "array", "items": {"enum": ["torch_hub", "huggingface", "zenodo", "other"]}},
+    "metrics": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/metric"}}
+  },
+  "$defs": {
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "variant", "options", "primary", "definition", "licence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9]+\\.[a-z0-9-]+@[0-9]+$"},
+        "variant": {"type": "string"},
+        "options": {"type": "object"},
+        "primary": {"type": "string"},
+        "definition": {"type": "string", "minLength": 1},
+        "licence": {"$ref": "#/$defs/licence"}
+      }
+    },
+    "licence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "weights", "data", "commercial_ok"],
+      "properties": {
+        "code": {"$ref": "#/$defs/licence_entry"},
+        "weights": {"$ref": "#/$defs/licence_entry"},
+        "data": {"$ref": "#/$defs/licence_entry"},
+        "commercial_ok": {"enum": ["yes", "no", "unknown"]}
+      }
+    },
+    "licence_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status"],
+      "properties": {
+        "name": {"type": ["string", "null"]},
+        "status": {"enum": ["read_from_file", "stated_on_page", "unknown", "not_applicable"]},
+        "source": {"type": "string"},
+        "check_urls": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

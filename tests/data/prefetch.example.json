@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "status": "ok",
+  "metric_id": "clapscore.laion-music@1",
+  "downloaded": ["huggingface.co/lukewys/laion_clap/music_audioset_epoch_15_esc_90.14.pt"],
+  "notes": ["text model loaded once to fill the cache"],
+  "timing_s": 42.0,
+  "error": null
+}

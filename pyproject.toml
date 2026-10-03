@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "musegauge"
+dynamic = ["version"]
+description = "Run several existing music generation metrics in one command, each in its own environment."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+dependencies = ["uv", "pyyaml", "numpy", "soundfile"]
+
+[project.optional-dependencies]
+dev = ["pytest", "jsonschema", "ruff"]
+
+[project.scripts]
+musegauge = "musegauge.cli:main"
+
+[tool.hatch.version]
+path = "src/musegauge/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/musegauge"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: builds real environments",
+    "network: downloads files",
+    "gpu: needs an NVIDIA GPU",
+    "docker: needs Docker",
+]
+# The default run is the fast set (section 11.1). A later -m on the command
+# line replaces this one, for example: pytest -m slow
+addopts = "-m 'not slow and not network and not gpu and not docker'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.per-file-target-version]
+# The runtime shim must also run on Python 3.9 (spec section 4.4).
+"src/musegauge/_runtime/**" = "py39"

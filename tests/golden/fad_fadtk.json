@@ -1,0 +1,330 @@
+{
+  "plugin_id": "fad_fadtk",
+  "cases": {
+    "vggish-dir": {
+      "cpu": {
+        "metric_id": "fad.vggish@1",
+        "device": "cpu",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": null,
+        "invocation": "vggish /tmp/tmpro24lea0/vggish-dir-0/ref_small /tmp/tmpro24lea0/vggish-dir-0/gen_small /tmp/tmpro24lea0/vggish-dir-0/plain.csv -w 8 ; vggish /tmp/tmpro24lea0/vggish-dir-0/ref_small /tmp/tmpro24lea0/vggish-dir-0/gen_small /tmp/tmpro24lea0/vggish-dir-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T03:18:52Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 6.404002057871562,
+              "fad_inf": 6.362135812221714,
+              "fad_inf_r2": 2.5030087051902683e-06
+            },
+            "seconds": 56.7
+          },
+          {
+            "scores": {
+              "fad": 6.404002057871562,
+              "fad_inf": 6.338251741833907,
+              "fad_inf_r2": 0.07234408672108927
+            },
+            "seconds": 38.1
+          },
+          {
+            "scores": {
+              "fad": 6.404002057871562,
+              "fad_inf": 6.40983800519424,
+              "fad_inf_r2": 0.005122106835249607
+            },
+            "seconds": 36.1
+          }
+        ]
+      },
+      "cuda": {
+        "metric_id": "fad.vggish@1",
+        "device": "cuda",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": "NVIDIA L40S",
+        "invocation": "vggish /tmp/tmpnzlpgrpx/vggish-dir-0/ref_small /tmp/tmpnzlpgrpx/vggish-dir-0/gen_small /tmp/tmpnzlpgrpx/vggish-dir-0/plain.csv -w 8 ; vggish /tmp/tmpnzlpgrpx/vggish-dir-0/ref_small /tmp/tmpnzlpgrpx/vggish-dir-0/gen_small /tmp/tmpnzlpgrpx/vggish-dir-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T02:57:24Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 6.4037340422154365,
+              "fad_inf": 6.470709502042467,
+              "fad_inf_r2": 0.00023956652490830788
+            },
+            "seconds": 51.1
+          },
+          {
+            "scores": {
+              "fad": 6.4037340422154365,
+              "fad_inf": 6.151672378601972,
+              "fad_inf_r2": 0.3191886244010259
+            },
+            "seconds": 31.9
+          },
+          {
+            "scores": {
+              "fad": 6.4037340422154365,
+              "fad_inf": 6.373677887752071,
+              "fad_inf_r2": 0.10445257529463636
+            },
+            "seconds": 44.9
+          }
+        ]
+      }
+    },
+    "vggish-fma_pop": {
+      "cpu": {
+        "metric_id": "fad.vggish@1",
+        "device": "cpu",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": null,
+        "invocation": "vggish fma_pop /tmp/tmpro24lea0/vggish-fma_pop-0/gen_small /tmp/tmpro24lea0/vggish-fma_pop-0/plain.csv -w 8 ; vggish fma_pop /tmp/tmpro24lea0/vggish-fma_pop-0/gen_small /tmp/tmpro24lea0/vggish-fma_pop-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T03:20:08Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 25.37354654507443,
+              "fad_inf": 25.469378269936467,
+              "fad_inf_r2": 0.0001206978131846892
+            },
+            "seconds": 24.4
+          },
+          {
+            "scores": {
+              "fad": 25.37354654507443,
+              "fad_inf": 25.2026373304536,
+              "fad_inf_r2": 0.03739301375551907
+            },
+            "seconds": 24.3
+          },
+          {
+            "scores": {
+              "fad": 25.37354654507443,
+              "fad_inf": 25.526095915064083,
+              "fad_inf_r2": 0.0011436147339989322
+            },
+            "seconds": 26.4
+          }
+        ]
+      },
+      "cuda": {
+        "metric_id": "fad.vggish@1",
+        "device": "cuda",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": "NVIDIA L40S",
+        "invocation": "vggish fma_pop /tmp/tmpnzlpgrpx/vggish-fma_pop-0/gen_small /tmp/tmpnzlpgrpx/vggish-fma_pop-0/plain.csv -w 8 ; vggish fma_pop /tmp/tmpnzlpgrpx/vggish-fma_pop-0/gen_small /tmp/tmpnzlpgrpx/vggish-fma_pop-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T02:59:04Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 25.368843807395155,
+              "fad_inf": 25.9646065195257,
+              "fad_inf_r2": 0.06638481958627784
+            },
+            "seconds": 39.9
+          },
+          {
+            "scores": {
+              "fad": 25.368843807395155,
+              "fad_inf": 26.023676355005346,
+              "fad_inf_r2": 0.0199522181097318
+            },
+            "seconds": 24.6
+          },
+          {
+            "scores": {
+              "fad": 25.368843807395155,
+              "fad_inf": 24.040254612088347,
+              "fad_inf_r2": 0.3262725646768241
+            },
+            "seconds": 35.0
+          }
+        ]
+      }
+    },
+    "clap-laion-music-dir": {
+      "cpu": {
+        "metric_id": "fad.clap-laion-music@1",
+        "device": "cpu",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": null,
+        "invocation": "clap-laion-music /tmp/tmpro24lea0/clap-laion-music-dir-0/ref_small /tmp/tmpro24lea0/clap-laion-music-dir-0/gen_small /tmp/tmpro24lea0/clap-laion-music-dir-0/plain.csv -w 8 ; clap-laion-music /tmp/tmpro24lea0/clap-laion-music-dir-0/ref_small /tmp/tmpro24lea0/clap-laion-music-dir-0/gen_small /tmp/tmpro24lea0/clap-laion-music-dir-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T04:16:02Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 0.16001256366075456,
+              "fad_inf": 0.1577038186906486,
+              "fad_inf_r2": 0.5478156225800841
+            },
+            "seconds": 1115.9
+          },
+          {
+            "scores": {
+              "fad": 0.16001256366075456,
+              "fad_inf": 0.1572325589120333,
+              "fad_inf_r2": 0.6079793977472223
+            },
+            "seconds": 1102.7
+          },
+          {
+            "scores": {
+              "fad": 0.16001256366075456,
+              "fad_inf": 0.15926801318279948,
+              "fad_inf_r2": 0.4534267425005588
+            },
+            "seconds": 1136.3
+          }
+        ]
+      },
+      "cuda": {
+        "metric_id": "fad.clap-laion-music@1",
+        "device": "cuda",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": "NVIDIA L40S",
+        "invocation": "clap-laion-music /tmp/tmpnzlpgrpx/clap-laion-music-dir-0/ref_small /tmp/tmpnzlpgrpx/clap-laion-music-dir-0/gen_small /tmp/tmpnzlpgrpx/clap-laion-music-dir-0/plain.csv -w 8 ; clap-laion-music /tmp/tmpnzlpgrpx/clap-laion-music-dir-0/ref_small /tmp/tmpnzlpgrpx/clap-laion-music-dir-0/gen_small /tmp/tmpnzlpgrpx/clap-laion-music-dir-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T03:06:03Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 0.1600124971205975,
+              "fad_inf": 0.15727148169594565,
+              "fad_inf_r2": 0.4682004692114855
+            },
+            "seconds": 127.4
+          },
+          {
+            "scores": {
+              "fad": 0.1600124971205975,
+              "fad_inf": 0.15777586980739716,
+              "fad_inf_r2": 0.5621015029688862
+            },
+            "seconds": 144.8
+          },
+          {
+            "scores": {
+              "fad": 0.1600124971205975,
+              "fad_inf": 0.1589492697164448,
+              "fad_inf_r2": 0.571584889498727
+            },
+            "seconds": 146.9
+          }
+        ]
+      }
+    },
+    "encodec-emb-dir": {
+      "cpu": {
+        "metric_id": "fad.encodec-emb@1",
+        "device": "cpu",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": null,
+        "invocation": "encodec-emb /tmp/tmpro24lea0/encodec-emb-dir-0/ref_small /tmp/tmpro24lea0/encodec-emb-dir-0/gen_small /tmp/tmpro24lea0/encodec-emb-dir-0/plain.csv -w 8 ; encodec-emb /tmp/tmpro24lea0/encodec-emb-dir-0/ref_small /tmp/tmpro24lea0/encodec-emb-dir-0/gen_small /tmp/tmpro24lea0/encodec-emb-dir-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T04:33:06Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 170.10745264056982,
+              "fad_inf": 169.84465131113498,
+              "fad_inf_r2": 0.7997486500258871
+            },
+            "seconds": 329.7
+          },
+          {
+            "scores": {
+              "fad": 170.10745264056982,
+              "fad_inf": 169.77046949325202,
+              "fad_inf_r2": 0.8212672332711798
+            },
+            "seconds": 331.8
+          },
+          {
+            "scores": {
+              "fad": 170.10745264056982,
+              "fad_inf": 169.34013088120795,
+              "fad_inf_r2": 0.7143700001047726
+            },
+            "seconds": 362.0
+          }
+        ]
+      },
+      "cuda": {
+        "metric_id": "fad.encodec-emb@1",
+        "device": "cuda",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": "NVIDIA L40S",
+        "invocation": "encodec-emb /tmp/tmpnzlpgrpx/encodec-emb-dir-0/ref_small /tmp/tmpnzlpgrpx/encodec-emb-dir-0/gen_small /tmp/tmpnzlpgrpx/encodec-emb-dir-0/plain.csv -w 8 ; encodec-emb /tmp/tmpnzlpgrpx/encodec-emb-dir-0/ref_small /tmp/tmpnzlpgrpx/encodec-emb-dir-0/gen_small /tmp/tmpnzlpgrpx/encodec-emb-dir-0/inf.csv -w 8 --inf",
+        "recorded_utc": "2026-10-03T03:09:17Z",
+        "env_id": "fad_fadtk-f7a67ac7",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "fad": 170.13839638480363,
+              "fad_inf": 170.42491604462214,
+              "fad_inf_r2": 0.5586476584193878
+            },
+            "seconds": 66.2
+          },
+          {
+            "scores": {
+              "fad": 170.13839638480363,
+              "fad_inf": 170.25656360142165,
+              "fad_inf_r2": 0.677261197005544
+            },
+            "seconds": 65.5
+          },
+          {
+            "scores": {
+              "fad": 170.13839638480363,
+              "fad_inf": 170.49678960158198,
+              "fad_inf_r2": 0.5123133774955342
+            },
+            "seconds": 62.8
+          }
+        ]
+      }
+    }
+  },
+  "fixture_sha256": {
+    "gen_small": "227126d3a362ff1c99e5af19cfc89c4c30ee3c2cd2b6b8262919c9ff7d6a5ffb",
+    "ref_small": "12b91a34db91d3639f25171cd05774c88a2ec0c85b306b9e055893675cafe73f",
+    "prompts_jsonl": "62315ed4ca58a79bb7829c71642ef56f065148f7f14143c7694efed292ef65a9"
+  }
+}

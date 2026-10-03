@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "musegauge/prefetch.schema.json",
+  "title": "Response file of the runtime shim in prefetch mode (spec section 9.1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "status", "metric_id", "downloaded", "notes", "timing_s", "error"],
+  "properties": {
+    "schema": {"const": 1},
+    "status": {"enum": ["ok", "error"]},
+    "metric_id": {"type": "string", "pattern": "^[a-z0-9]+\\.[a-z0-9-]+@[0-9]+$"},
+    "downloaded": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "array", "items": {"type": "string"}},
+    "timing_s": {"type": ["number", "null"], "minimum": 0},
+    "error": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "message", "traceback_tail"],
+          "properties": {
+            "type": {"type": "string"},
+            "message": {"type": "string"},
+            "traceback_tail": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    }
+  }
+}

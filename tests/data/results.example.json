@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "suite": "t2m-basic@1",
+  "tool": {"name": "musegauge", "version": "0.1.0", "git_commit": null, "uv_version": "0.0.0",
+           "python": "3.11.9", "platform": "linux-x86_64"},
+  "run": {"run_id": "20261002T154501Z-a1b2c3", "started_utc": "2026-10-02T15:45:01Z",
+          "finished_utc": "2026-10-02T16:10:44Z", "command": "musegauge run ...", "seed": 0,
+          "device_requested": "auto", "reproducible": true, "threads": null},
+  "generated": {"n_clips": 200, "n_skipped": 1,
+                "skipped": [{"clip_id": "song_0201", "path": "/abs/audio/song_0201.wav", "reason": "zero length"}],
+                "n_with_prompt": 200, "total_duration_s": 2000.0,
+                "sample_rates_hz": {"32000": 200}, "duration_s": {"min": 10.0, "median": 10.0, "max": 10.0},
+                "manifest_sha256": "9f2c6d6c0c1b5d1f0d0e0b0a09080706050403020100ffeeddccbbaa99887766",
+                "extra": {"song_0002": {"model": "my-model-v2"}}},
+  "reference": {"kind": "bundled", "name": "fma_pop", "ref_hash": null, "n_clips": null, "total_duration_s": null},
+  "metrics": [
+    {
+      "metric_id": "fad.vggish@1", "plugin_id": "fad_fadtk", "kind": "set", "status": "ok", "primary": "fad",
+      "definition": "text copied from the manifest",
+      "scores": [
+        {"name": "fad", "kind": "set", "value": 12.34, "n": null, "std": null, "ci": null,
+         "ci_reason": "set-level metric, no confidence interval in 0.1"}
+      ],
+      "clips_failed": [],
+      "per_clip_file": null,
+      "upstream": {"package": "fadtk", "version": "1.1.0", "invocation": "..."},
+      "env": {"env_id": "fad_fadtk-1a2b3c4d", "lock_sha256": "...", "python": "3.11.9", "torch": "2.7.0",
+              "cuda_available": true, "device": "cuda", "gpu_name": "NVIDIA ..."},
+      "licence": {
+        "code": {"name": "MIT", "status": "read_from_file", "source": "LICENSE inside the fadtk 1.1.0 wheel"},
+        "weights": {"name": null, "status": "unknown", "check_urls": ["https://github.com/harritaylor/torchvggish"]},
+        "data": {"name": null, "status": "not_applicable"},
+        "commercial_ok": "unknown"
+      },
+      "warnings": [{"code": "UNKNOWN_LICENCE", "scope": "metric", "message": "text", "metric_id": "fad.vggish@1"}],
+      "error": null, "timing_s": 123.4
+    },
+    {
+      "metric_id": "aesthetics.audiobox@1", "plugin_id": "aesthetics_audiobox", "kind": "clip", "status": "ok",
+      "primary": "PQ", "definition": "text copied from the manifest",
+      "scores": [
+        {"name": "CE", "kind": "clip", "value": 5.1, "n": 200, "std": 0.9,
+         "ci": {"method": "bootstrap-percentile", "level": 0.95, "n_resamples": 1000, "seed": 0, "low": 4.9, "high": 5.3}}
+      ],
+      "clips_failed": [{"clip_id": "song_0007", "reason": "RuntimeError: example"}],
+      "per_clip_file": "per_clip/aesthetics.audiobox@1.csv",
+      "upstream": {"package": "audiobox-aesthetics", "version": "0.0.4", "invocation": "..."},
+      "env": {"env_id": "aesthetics_audiobox-0a1b2c3d", "lock_sha256": "...", "python": "3.11.9"},
+      "licence": {
+        "code": {"name": "CC-BY-4.0", "status": "read_from_file", "notes": "README says a small part is MIT"},
+        "weights": {"name": null, "status": "unknown"},
+        "data": {"name": null, "status": "not_applicable"},
+        "commercial_ok": "unknown"
+      },
+      "warnings": [], "error": null, "timing_s": 60.0
+    }
+  ],
+  "warnings": [{"code": "EXAMPLE", "scope": "run", "message": "text"}]
+}

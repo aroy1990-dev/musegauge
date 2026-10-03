@@ -1,0 +1,34 @@
+schema: 1
+plugin_id: fake_fail
+family: fake
+description: "Test plugin: always raises"
+kind: clip
+python: "3.12"  # tests/conftest.py replaces this with the test interpreter's version
+requirements_in: requirements.in
+locks:
+  linux-x86_64: locks/linux-x86_64.txt
+smoke: ["python", "-c", "import wave"]
+system_tools:
+  required: []
+  optional: []
+needs:
+  reference: false
+  prompts: false
+reference_modes: []
+bundled_references: []
+upstream:
+  package: python-stdlib
+  version: "0"
+trust_remote_code: false
+runtime_downloads: []
+metrics:
+  - id: fake.fail@1
+    variant: fail
+    options: {}
+    primary: none
+    definition: "Test plugin. Always raises an error."
+    licence:
+      code: {name: null, status: not_applicable}
+      weights: {name: null, status: not_applicable}
+      data: {name: null, status: not_applicable}
+      commercial_ok: unknown

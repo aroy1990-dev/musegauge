@@ -1,0 +1,7 @@
+# Upstream tool (spec section 9.3)
+kadtk==1.1.0
+# torch, torchaudio and torchvision as a matched set (spec section 4.2, U3). kadtk 1.1.0
+# needs torch>=2.1,<2.6 (F3); 2.5.1 is the newest such torch.
+torch==2.5.1
+torchaudio==2.5.1
+torchvision==0.20.1

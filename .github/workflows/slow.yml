@@ -1,0 +1,29 @@
+# Nightly and on request (spec section 11.7, as changed at GATE 3, amendment A17): the isolation
+# test with the fake plugins (two real environments with different numpy and Python), and the
+# upstream fact check. No real metric plugins: their environments take about 24 GB and their
+# golden numbers are tied to the server they were recorded on. Real golden tests are run by hand
+# with scripts/run_golden.sh (docs/TESTING_REAL_PLUGINS.md).
+# Not run yet: the repository has no GitHub remote (D3).
+name: slow
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  slow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install uv and musegauge
+        run: |
+          python -m pip install uv
+          uv venv --python 3.12 .venv
+          uv pip install --python .venv/bin/python -e ".[dev]"
+      - name: Re-check upstream facts (fails when an upstream package changed)
+        run: .venv/bin/python scripts/verify_facts.py
+      - name: Isolation test (fake_np1 and fake_np2)
+        run: .venv/bin/pytest -m slow -v tests/integration/test_isolation.py

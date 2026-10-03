@@ -1,0 +1,7 @@
+# Upstream tool (spec section 9.2)
+fadtk==1.1.0
+# torch, torchaudio and torchvision as a matched set (spec section 4.2). fadtk 1.1.0 needs
+# torchvision>=0.22.0, and torchvision 0.22.0 needs torch==2.7.0 (F1, F2).
+torch==2.7.0
+torchaudio==2.7.0
+torchvision==0.22.0

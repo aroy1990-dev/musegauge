@@ -1,0 +1,288 @@
+{
+  "plugin_id": "clapscore_laion",
+  "cases": {
+    "gen_small": {
+      "cpu": {
+        "metric_id": "clapscore.laion-music@1",
+        "device": "cpu",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.7",
+        "python": "3.11.17",
+        "gpu_name": null,
+        "invocation": "CLAP_Module(enable_fusion=False, amodel='HTSAT-base'); load_ckpt(music ckpt); get_audio_embedding_from_data(windows); get_text_embedding([prompt])",
+        "recorded_utc": "2026-10-03T03:16:40Z",
+        "env_id": "clapscore_laion-a3ecbe8b",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "per_clip": {
+              "gen_000": {
+                "clap_cosine": 0.3138045492547386
+              },
+              "gen_001": {
+                "clap_cosine": 0.2083663841367929
+              },
+              "gen_002": {
+                "clap_cosine": 0.25478667550708906
+              },
+              "gen_003": {
+                "clap_cosine": 0.31695419679308295
+              },
+              "gen_004": {
+                "clap_cosine": 0.2032452222299258
+              },
+              "gen_005": {
+                "clap_cosine": 0.19293640116465546
+              },
+              "gen_006": {
+                "clap_cosine": 0.26287884350664803
+              },
+              "gen_007": {
+                "clap_cosine": 0.09748017979201903
+              },
+              "gen_008": {
+                "clap_cosine": 0.26152630341661415
+              },
+              "gen_009": {
+                "clap_cosine": 0.2362713759300581
+              },
+              "gen_010": {
+                "clap_cosine": 0.22327041834683606
+              },
+              "gen_011": {
+                "clap_cosine": 0.21480765000664026
+              }
+            },
+            "seconds": 19.9
+          },
+          {
+            "per_clip": {
+              "gen_000": {
+                "clap_cosine": 0.3138045492547386
+              },
+              "gen_001": {
+                "clap_cosine": 0.2083663841367929
+              },
+              "gen_002": {
+                "clap_cosine": 0.25478667550708906
+              },
+              "gen_003": {
+                "clap_cosine": 0.31695419679308295
+              },
+              "gen_004": {
+                "clap_cosine": 0.2032452222299258
+              },
+              "gen_005": {
+                "clap_cosine": 0.19293640116465546
+              },
+              "gen_006": {
+                "clap_cosine": 0.26287884350664803
+              },
+              "gen_007": {
+                "clap_cosine": 0.09748017979201903
+              },
+              "gen_008": {
+                "clap_cosine": 0.26152630341661415
+              },
+              "gen_009": {
+                "clap_cosine": 0.2362713759300581
+              },
+              "gen_010": {
+                "clap_cosine": 0.22327041834683606
+              },
+              "gen_011": {
+                "clap_cosine": 0.21480765000664026
+              }
+            },
+            "seconds": 17.5
+          },
+          {
+            "per_clip": {
+              "gen_000": {
+                "clap_cosine": 0.3138045492547386
+              },
+              "gen_001": {
+                "clap_cosine": 0.2083663841367929
+              },
+              "gen_002": {
+                "clap_cosine": 0.25478667550708906
+              },
+              "gen_003": {
+                "clap_cosine": 0.31695419679308295
+              },
+              "gen_004": {
+                "clap_cosine": 0.2032452222299258
+              },
+              "gen_005": {
+                "clap_cosine": 0.19293640116465546
+              },
+              "gen_006": {
+                "clap_cosine": 0.26287884350664803
+              },
+              "gen_007": {
+                "clap_cosine": 0.09748017979201903
+              },
+              "gen_008": {
+                "clap_cosine": 0.26152630341661415
+              },
+              "gen_009": {
+                "clap_cosine": 0.2362713759300581
+              },
+              "gen_010": {
+                "clap_cosine": 0.22327041834683606
+              },
+              "gen_011": {
+                "clap_cosine": 0.21480765000664026
+              }
+            },
+            "seconds": 35.2
+          }
+        ]
+      },
+      "cuda": {
+        "metric_id": "clapscore.laion-music@1",
+        "device": "cuda",
+        "torch": "2.7.0+cu126",
+        "upstream_version": "1.1.7",
+        "python": "3.11.17",
+        "gpu_name": "NVIDIA L40S",
+        "invocation": "CLAP_Module(enable_fusion=False, amodel='HTSAT-base'); load_ckpt(music ckpt); get_audio_embedding_from_data(windows); get_text_embedding([prompt])",
+        "recorded_utc": "2026-10-03T02:55:15Z",
+        "env_id": "clapscore_laion-a3ecbe8b",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "per_clip": {
+              "gen_000": {
+                "clap_cosine": 0.31380437605148676
+              },
+              "gen_001": {
+                "clap_cosine": 0.20836611268792382
+              },
+              "gen_002": {
+                "clap_cosine": 0.25478675777500454
+              },
+              "gen_003": {
+                "clap_cosine": 0.3169539402012223
+              },
+              "gen_004": {
+                "clap_cosine": 0.2032448925696619
+              },
+              "gen_005": {
+                "clap_cosine": 0.19293626894135008
+              },
+              "gen_006": {
+                "clap_cosine": 0.2628788609096696
+              },
+              "gen_007": {
+                "clap_cosine": 0.09747993875999517
+              },
+              "gen_008": {
+                "clap_cosine": 0.2615263146561529
+              },
+              "gen_009": {
+                "clap_cosine": 0.23627105582493865
+              },
+              "gen_010": {
+                "clap_cosine": 0.2232696241724685
+              },
+              "gen_011": {
+                "clap_cosine": 0.21480757931691602
+              }
+            },
+            "seconds": 16.0
+          },
+          {
+            "per_clip": {
+              "gen_000": {
+                "clap_cosine": 0.31380437605148676
+              },
+              "gen_001": {
+                "clap_cosine": 0.20836611268792382
+              },
+              "gen_002": {
+                "clap_cosine": 0.25478675777500454
+              },
+              "gen_003": {
+                "clap_cosine": 0.3169539402012223
+              },
+              "gen_004": {
+                "clap_cosine": 0.2032448925696619
+              },
+              "gen_005": {
+                "clap_cosine": 0.19293626894135008
+              },
+              "gen_006": {
+                "clap_cosine": 0.2628788609096696
+              },
+              "gen_007": {
+                "clap_cosine": 0.09747993875999517
+              },
+              "gen_008": {
+                "clap_cosine": 0.2615263146561529
+              },
+              "gen_009": {
+                "clap_cosine": 0.23627105582493865
+              },
+              "gen_010": {
+                "clap_cosine": 0.2232696241724685
+              },
+              "gen_011": {
+                "clap_cosine": 0.21480757931691602
+              }
+            },
+            "seconds": 15.9
+          },
+          {
+            "per_clip": {
+              "gen_000": {
+                "clap_cosine": 0.31380437605148676
+              },
+              "gen_001": {
+                "clap_cosine": 0.20836611268792382
+              },
+              "gen_002": {
+                "clap_cosine": 0.25478675777500454
+              },
+              "gen_003": {
+                "clap_cosine": 0.3169539402012223
+              },
+              "gen_004": {
+                "clap_cosine": 0.2032448925696619
+              },
+              "gen_005": {
+                "clap_cosine": 0.19293626894135008
+              },
+              "gen_006": {
+                "clap_cosine": 0.2628788609096696
+              },
+              "gen_007": {
+                "clap_cosine": 0.09747993875999517
+              },
+              "gen_008": {
+                "clap_cosine": 0.2615263146561529
+              },
+              "gen_009": {
+                "clap_cosine": 0.23627105582493865
+              },
+              "gen_010": {
+                "clap_cosine": 0.2232696241724685
+              },
+              "gen_011": {
+                "clap_cosine": 0.21480757931691602
+              }
+            },
+            "seconds": 15.8
+          }
+        ]
+      }
+    }
+  },
+  "fixture_sha256": {
+    "gen_small": "227126d3a362ff1c99e5af19cfc89c4c30ee3c2cd2b6b8262919c9ff7d6a5ffb",
+    "ref_small": "12b91a34db91d3639f25171cd05774c88a2ec0c85b306b9e055893675cafe73f",
+    "prompts_jsonl": "62315ed4ca58a79bb7829c71642ef56f065148f7f14143c7694efed292ef65a9"
+  }
+}

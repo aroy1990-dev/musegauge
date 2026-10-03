@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "musegauge/clip.schema.json",
+  "title": "One line of a clips file (spec section 6.1)",
+  "description": "Fields other than these are kept under 'extra' in the results and otherwise ignored.",
+  "type": "object",
+  "required": ["clip_id", "path"],
+  "properties": {
+    "clip_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,128}$"},
+    "path": {"type": "string", "minLength": 1},
+    "prompt": {"type": "string", "pattern": "\\S", "description": "Not empty after trimming."},
+    "prompt_id": {"type": "string"}
+  }
+}

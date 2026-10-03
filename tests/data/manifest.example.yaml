@@ -1,0 +1,34 @@
+schema: 1
+plugin_id: fad_fadtk              # equals the folder name; pattern ^[a-z0-9_]+$
+family: fad                       # first part of every metric id here
+description: "Frechet Audio Distance through fadtk"
+kind: set                         # set or clip
+python: "3.11"
+requirements_in: requirements.in
+locks:
+  linux-x86_64: locks/linux-x86_64.txt
+smoke: ["python", "-c", "import fadtk"]
+system_tools:
+  required: [sox]
+  optional: [ffmpeg]
+needs:
+  reference: true
+  prompts: false
+reference_modes: [dir, bundled]
+bundled_references: [fma_pop]
+upstream:
+  package: fadtk
+  version: "1.1.0"
+trust_remote_code: false
+runtime_downloads: [torch_hub, huggingface]
+metrics:
+  - id: fad.vggish@1
+    variant: vggish
+    options: {model: vggish, inf: true}
+    primary: fad
+    definition: "Frechet distance between Gaussian fits of fadtk vggish embeddings of the generated and reference sets, as computed by fadtk 1.1.0"
+    licence:
+      code:    {name: MIT, status: read_from_file, source: "LICENSE inside the fadtk 1.1.0 wheel"}
+      weights: {name: null, status: unknown, check_urls: ["https://github.com/harritaylor/torchvggish"]}
+      data:    {name: null, status: not_applicable}
+      commercial_ok: unknown      # only Roy changes this to yes or no

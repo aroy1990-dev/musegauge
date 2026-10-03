@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "musegauge/results.schema.json",
+  "title": "Results file, results.json (spec section 6.5)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "suite", "tool", "run", "generated", "reference", "metrics", "warnings"],
+  "properties": {
+    "schema": {"const": 1},
+    "suite": {"type": ["string", "null"], "pattern": "^[a-z0-9-]+@[0-9]+$"},
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "git_commit", "uv_version", "python", "platform"],
+      "properties": {
+        "name": {"const": "musegauge"},
+        "version": {"type": "string"},
+        "git_commit": {"type": ["string", "null"]},
+        "uv_version": {"type": ["string", "null"]},
+        "python": {"type": "string"},
+        "platform": {"type": "string"}
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id", "started_utc", "finished_utc", "command", "seed", "device_requested",
+                   "reproducible", "threads"],
+      "properties": {
+        "run_id": {"type": "string"},
+        "started_utc": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+        "finished_utc": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+        "command": {"type": "string"},
+        "seed": {"type": "integer"},
+        "device_requested": {"enum": ["auto", "cpu", "cuda", "mps"]},
+        "reproducible": {"type": "boolean"},
+        "threads": {
+          "description": "--threads N, or null when not set (amendment A11).",
+          "type": ["integer", "null"],
+          "minimum": 1
+        }
+      }
+    },
+    "generated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n_clips", "n_skipped", "skipped", "n_with_prompt", "total_duration_s",
+                   "sample_rates_hz", "duration_s", "manifest_sha256", "extra"],
+      "properties": {
+        "n_clips": {"type": "integer", "minimum": 0},
+        "n_skipped": {"type": "integer", "minimum": 0},
+        "skipped": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["clip_id", "path", "reason"],
+            "properties": {
+              "clip_id": {"type": "string"},
+              "path": {"type": "string"},
+              "reason": {"type": "string"}
+            }
+          }
+        },
+        "n_with_prompt": {"type": "integer", "minimum": 0},
+        "total_duration_s": {"type": "number", "minimum": 0},
+        "sample_rates_hz": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}},
+        "duration_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min", "median", "max"],
+          "properties": {
+            "min": {"type": "number"},
+            "median": {"type": "number"},
+            "max": {"type": "number"}
+          }
+        },
+        "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "extra": {
+          "description": "Extra fields from the clips file (section 6.1), by clip_id. Only clips that had any.",
+          "type": "object",
+          "additionalProperties": {"type": "object"}
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "ref_hash", "n_clips", "total_duration_s"],
+      "properties": {
+        "kind": {"enum": ["dir", "bundled", "none"]},
+        "name": {"type": ["string", "null"]},
+        "ref_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "n_clips": {"type": ["integer", "null"], "minimum": 0},
+        "total_duration_s": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "metrics": {"type": "array", "items": {"$ref": "#/$defs/metric"}},
+    "warnings": {"type": "array", "items": {"$ref": "#/$defs/warning"}}
+  },
+  "$defs": {
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric_id", "plugin_id", "kind", "status", "primary", "definition", "scores",
+                   "clips_failed", "per_clip_file", "upstream", "env", "licence", "warnings",
+                   "error", "timing_s"],
+      "properties": {
+        "metric_id": {"type": "string", "pattern": "^[a-z0-9]+\\.[a-z0-9-]+@[0-9]+$"},
+        "plugin_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "kind": {"enum": ["set", "clip"]},
+        "status": {"enum": ["ok", "error", "skipped"]},
+        "primary": {"type": "string"},
+        "definition": {"type": "string"},
+        "scores": {"type": "array", "items": {"$ref": "#/$defs/score"}},
+        "clips_failed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["clip_id", "reason"],
+            "properties": {
+              "clip_id": {"type": "string"},
+              "reason": {"type": "string"}
+            }
+          }
+        },
+        "per_clip_file": {"type": ["string", "null"]},
+        "upstream": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["package", "version", "invocation"],
+          "properties": {
+            "package": {"type": "string"},
+            "version": {"type": ["string", "null"]},
+            "invocation": {"type": "string"}
+          }
+        },
+        "env": {"type": ["object", "null"]},
+        "licence": {"$ref": "#/$defs/licence"},
+        "warnings": {"type": "array", "items": {"$ref": "#/$defs/warning"}},
+        "error": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["type", "message", "traceback_tail"],
+              "properties": {
+                "type": {"type": "string"},
+                "message": {"type": "string"},
+                "traceback_tail": {"type": ["string", "null"]}
+              }
+            }
+          ]
+        },
+        "timing_s": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "value", "n", "std", "ci"],
+      "properties": {
+        "name": {"type": "string"},
+        "kind": {"enum": ["set", "aux", "clip"]},
+        "value": {"type": ["number", "null"]},
+        "n": {"type": ["integer", "null"], "minimum": 0},
+        "std": {"type": ["number", "null"]},
+        "ci": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["method", "level", "n_resamples", "seed", "low", "high"],
+              "properties": {
+                "method": {"const": "bootstrap-percentile"},
+                "level": {"type": "number"},
+                "n_resamples": {"type": "integer", "minimum": 1},
+                "seed": {"type": "integer"},
+                "low": {"type": "number"},
+                "high": {"type": "number"}
+              }
+            }
+          ]
+        },
+        "ci_reason": {"type": "string"}
+      }
+    },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "scope", "message"],
+      "properties": {
+        "code": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "scope": {"enum": ["run", "metric"]},
+        "message": {"type": "string"},
+        "metric_id": {"type": "string"}
+      }
+    },
+    "licence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "weights", "data", "commercial_ok"],
+      "properties": {
+        "code": {"$ref": "#/$defs/licence_entry"},
+        "weights": {"$ref": "#/$defs/licence_entry"},
+        "data": {"$ref": "#/$defs/licence_entry"},
+        "commercial_ok": {"enum": ["yes", "no", "unknown"]}
+      }
+    },
+    "licence_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status"],
+      "properties": {
+        "name": {"type": ["string", "null"]},
+        "status": {"enum": ["read_from_file", "stated_on_page", "unknown", "not_applicable"]},
+        "source": {"type": "string"},
+        "check_urls": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "status": "ok",
+  "metric_id": "fad.vggish@1",
+  "scores": [
+    {"name": "fad", "value": 12.34, "kind": "set"},
+    {"name": "fad_inf", "value": 11.9, "kind": "set"},
+    {"name": "fad_inf_r2", "value": 0.99, "kind": "aux"}
+  ],
+  "clip_scores": [],
+  "clips_failed": [],
+  "upstream": {"package": "fadtk", "version": "1.1.0", "invocation": "python -m fadtk vggish fma_pop GEN out.csv"},
+  "env": {"python": "3.11.9", "torch": "2.7.0", "cuda_available": true, "device": "cuda", "gpu_name": "NVIDIA ..."},
+  "warnings": [{"code": "EXAMPLE", "message": "text"}],
+  "timing_s": 123.4,
+  "error": null
+}

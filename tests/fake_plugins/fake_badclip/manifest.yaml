@@ -1,0 +1,34 @@
+schema: 1
+plugin_id: fake_badclip
+family: fake
+description: "Test plugin: fails on one named clip"
+kind: clip
+python: "3.12"  # tests/conftest.py replaces this with the test interpreter's version
+requirements_in: requirements.in
+locks:
+  linux-x86_64: locks/linux-x86_64.txt
+smoke: ["python", "-c", "import wave"]
+system_tools:
+  required: []
+  optional: []
+needs:
+  reference: false
+  prompts: false
+reference_modes: []
+bundled_references: []
+upstream:
+  package: python-stdlib
+  version: "0"
+trust_remote_code: false
+runtime_downloads: []
+metrics:
+  - id: fake.badclip@1
+    variant: badclip
+    options: {bad_clip: gen_003}
+    primary: length_s
+    definition: "Test plugin. Clip length in seconds from the request. Fails on the clip named in options.bad_clip."
+    licence:
+      code: {name: null, status: not_applicable}
+      weights: {name: null, status: not_applicable}
+      data: {name: null, status: not_applicable}
+      commercial_ok: unknown

@@ -1,0 +1,146 @@
+{
+  "plugin_id": "kad_kadtk",
+  "cases": {
+    "vggish-dir": {
+      "cpu": {
+        "metric_id": "kad.vggish@1",
+        "device": "cpu",
+        "torch": "2.5.1+cu124",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": null,
+        "invocation": "vggish /tmp/tmpcmm66893/vggish-dir-0/ref_small /tmp/tmpcmm66893/vggish-dir-0/gen_small --csv /tmp/tmpcmm66893/vggish-dir-0/kad.csv --device cpu -w 8",
+        "recorded_utc": "2026-10-03T04:55:49Z",
+        "env_id": "kad_kadtk-391cfe89",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "kad": 6.871640682220459
+            },
+            "seconds": 34.3
+          },
+          {
+            "scores": {
+              "kad": 6.871640682220459
+            },
+            "seconds": 33.7
+          },
+          {
+            "scores": {
+              "kad": 6.871640682220459
+            },
+            "seconds": 33.3
+          }
+        ]
+      },
+      "cuda": {
+        "metric_id": "kad.vggish@1",
+        "device": "cuda",
+        "torch": "2.5.1+cu124",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": "NVIDIA L40S",
+        "invocation": "vggish /tmp/tmp9hnb9m25/vggish-dir-0/ref_small /tmp/tmp9hnb9m25/vggish-dir-0/gen_small --csv /tmp/tmp9hnb9m25/vggish-dir-0/kad.csv --device cuda -w 8",
+        "recorded_utc": "2026-10-03T03:10:53Z",
+        "env_id": "kad_kadtk-391cfe89",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "kad": 6.871777534484863
+            },
+            "seconds": 31.4
+          },
+          {
+            "scores": {
+              "kad": 6.871777534484863
+            },
+            "seconds": 31.1
+          },
+          {
+            "scores": {
+              "kad": 6.871777534484863
+            },
+            "seconds": 31.4
+          }
+        ]
+      }
+    },
+    "clap-laion-music-dir": {
+      "cpu": {
+        "metric_id": "kad.clap-laion-music@1",
+        "device": "cpu",
+        "torch": "2.5.1+cu124",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": null,
+        "invocation": "clap-laion-music /tmp/tmpcmm66893/clap-laion-music-dir-0/ref_small /tmp/tmpcmm66893/clap-laion-music-dir-0/gen_small --csv /tmp/tmpcmm66893/clap-laion-music-dir-0/kad.csv --device cpu -w 8",
+        "recorded_utc": "2026-10-03T05:52:14Z",
+        "env_id": "kad_kadtk-391cfe89",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "kad": 1.4183998107910156
+            },
+            "seconds": 1155.5
+          },
+          {
+            "scores": {
+              "kad": 1.4183998107910156
+            },
+            "seconds": 1121.1
+          },
+          {
+            "scores": {
+              "kad": 1.4183998107910156
+            },
+            "seconds": 1108.1
+          }
+        ]
+      },
+      "cuda": {
+        "metric_id": "kad.clap-laion-music@1",
+        "device": "cuda",
+        "torch": "2.5.1+cu124",
+        "upstream_version": "1.1.0",
+        "python": "3.11.17",
+        "gpu_name": "NVIDIA L40S",
+        "invocation": "clap-laion-music /tmp/tmp9hnb9m25/clap-laion-music-dir-0/ref_small /tmp/tmp9hnb9m25/clap-laion-music-dir-0/gen_small --csv /tmp/tmp9hnb9m25/clap-laion-music-dir-0/kad.csv --device cuda -w 8",
+        "recorded_utc": "2026-10-03T03:14:54Z",
+        "env_id": "kad_kadtk-391cfe89",
+        "cpu_cores": 16,
+        "torch_threads": 16,
+        "repeats": [
+          {
+            "scores": {
+              "kad": 1.4183759689331055
+            },
+            "seconds": 79.8
+          },
+          {
+            "scores": {
+              "kad": 1.4183759689331055
+            },
+            "seconds": 81.4
+          },
+          {
+            "scores": {
+              "kad": 1.4183759689331055
+            },
+            "seconds": 79.9
+          }
+        ]
+      }
+    }
+  },
+  "fixture_sha256": {
+    "gen_small": "227126d3a362ff1c99e5af19cfc89c4c30ee3c2cd2b6b8262919c9ff7d6a5ffb",
+    "ref_small": "12b91a34db91d3639f25171cd05774c88a2ec0c85b306b9e055893675cafe73f",
+    "prompts_jsonl": "62315ed4ca58a79bb7829c71642ef56f065148f7f14143c7694efed292ef65a9"
+  }
+}
