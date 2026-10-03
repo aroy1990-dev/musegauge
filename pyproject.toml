@@ -23,6 +23,9 @@ path = "src/musegauge/__init__.py"
 [tool.hatch.build.targets.wheel]
 packages = ["src/musegauge"]
 
+[tool.hatch.build.targets.sdist]
+exclude = ["specs/"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
