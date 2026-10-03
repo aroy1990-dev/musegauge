@@ -77,7 +77,8 @@ def test_reference_is_staged_fresh_for_each_run(tmp_path, fixtures):
     assert second != first and not (second / "embeddings").exists()
     assert sorted(p.name for p in second.iterdir()) == [f"ref_{i:03d}.wav" for i in range(12)]
     assert all((second / f.name).is_symlink() for f in refset.files)
-    assert not list((tmp_path / "refs").glob("*/"))  # only the hash cache file lives in refs/
+    # only the hash cache file lives in refs/ (glob("*/") also matches files before Python 3.11)
+    assert not [p for p in (tmp_path / "refs").iterdir() if p.is_dir()]
 
 
 def test_unreadable_files_are_not_in_the_reference(tmp_path, fixtures):
