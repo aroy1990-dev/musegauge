@@ -7,7 +7,7 @@ and the numbers are the same everywhere. No way is the "main" one. (The spec als
 | Path | You need | Admin rights | Internet | Tested on the build machine (2026-10-03) |
 | --- | --- | --- | --- | --- |
 | pip | Python 3.10 or newer | No (use a virtual environment) | First run | **Tested**: wheel installed into a clean `python -m venv`, `--version` and `doctor` ran |
-| uvx | uv | No | First run | **Tested from the source folder only** (`uvx --from . musegauge`); the `git+https` form is not tested |
+| uvx | uv | No | First run | **Tested from the source folder only** (`uvx --from . musegauge`); the PyPI form is not tested |
 | Docker `slim` | Docker; for GPU the NVIDIA Container Toolkit | Usually yes | First run | **Not built here, not tested** (no Docker on the build machine) |
 | Apptainer | Apptainer | Often no | To build the `.sif` and fetch weights | **Not tested** (no Apptainer on the build machine) |
 
@@ -25,7 +25,7 @@ there and downloads about 3.7 GB of weights (see "Disk space" below).
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install git+https://github.com/aroy1990-dev/musegauge
+pip install musegauge
 musegauge doctor
 musegauge setup --suite t2m-basic --fetch-weights   # optional: build and download ahead of time
 musegauge run --generated ./my_audio --prompts prompts.csv --out ./out
@@ -40,12 +40,12 @@ clean `python3 -m venv` with pip 24.2, and `musegauge --version` and `musegauge 
 ## 2. uvx (no install)
 
 ```bash
-uvx --from git+https://github.com/aroy1990-dev/musegauge musegauge run --generated ./my_audio --out ./out
+uvx musegauge run --generated ./my_audio --out ./out
 uvx --from . musegauge --version                             # from a source checkout
 ```
 
 Tested: `uvx --from . musegauge --version` printed `musegauge 0.1.0.dev0` (the version at the time) with uv 0.12.22, and
-`uvx --from . musegauge list` worked. The `git+https` form is not tested.
+`uvx --from . musegauge list` worked. The PyPI form is not tested.
 
 ## 3. Docker `slim`
 

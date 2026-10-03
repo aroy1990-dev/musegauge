@@ -17,7 +17,7 @@ Linux x86_64 is supported; macOS is best effort; Windows is not supported.
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install git+https://github.com/aroy1990-dev/musegauge
+pip install musegauge
 musegauge doctor
 musegauge run --generated ./my_audio --prompts prompts.csv --out ./out
 ```
@@ -28,7 +28,7 @@ without the `python3-venv` package), use another Python, or `uv venv`.
 **uvx** (no install; needs uv):
 
 ```bash
-uvx --from git+https://github.com/aroy1990-dev/musegauge musegauge run --generated ./my_audio --out ./out
+uvx musegauge run --generated ./my_audio --out ./out
 uvx --from . musegauge --version                         # from a clone
 ```
 
