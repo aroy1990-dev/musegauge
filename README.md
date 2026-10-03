@@ -1,5 +1,7 @@
 # musegauge
 
+Needs a GPU, about 28 GB free disk, Linux x86_64.
+
 musegauge scores a folder of generated music with several existing metrics in one command:
 Frechet Audio Distance (fadtk), Kernel Audio Distance (kadtk), a CLAP text-audio score
 (laion-clap) and Audiobox Aesthetics. Each metric runs in its own Python environment, which the
@@ -15,7 +17,7 @@ Linux x86_64 is supported; macOS is best effort; Windows is not supported.
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install musegauge                    # not on PyPI yet: from a clone, `pip install .`
+pip install git+https://github.com/aroy1990-dev/musegauge
 musegauge doctor
 musegauge run --generated ./my_audio --prompts prompts.csv --out ./out
 ```
@@ -26,7 +28,7 @@ without the `python3-venv` package), use another Python, or `uv venv`.
 **uvx** (no install; needs uv):
 
 ```bash
-uvx musegauge run --generated ./my_audio --out ./out     # after a release
+uvx --from git+https://github.com/aroy1990-dev/musegauge musegauge run --generated ./my_audio --out ./out
 uvx --from . musegauge --version                         # from a clone
 ```
 
