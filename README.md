@@ -8,8 +8,8 @@ Frechet Audio Distance (fadtk), Kernel Audio Distance (kadtk), a CLAP text-audio
 tool builds by itself with uv, so tools that need different torch versions can be used together.
 One run writes a `results.json` and a short report card for a paper appendix.
 
-Version 0.1.0. Source: https://github.com/aroy1990-dev/musegauge. Not on PyPI; no container image is published.
-Linux x86_64 is supported; macOS is best effort; Windows is not supported.
+Version 0.1.1. Source: https://github.com/aroy1990-dev/musegauge. On PyPI. No container image is published.
+Tested on Linux x86_64 only. Other systems are not tested.
 
 ## Quick start
 

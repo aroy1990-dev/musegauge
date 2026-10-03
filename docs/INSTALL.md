@@ -6,7 +6,7 @@ and the numbers are the same everywhere. No way is the "main" one. (The spec als
 
 | Path | You need | Admin rights | Internet | Tested on the build machine (2026-10-03) |
 | --- | --- | --- | --- | --- |
-| pip | Python 3.10 or newer | No (use a virtual environment) | First run | **Tested**: wheel installed into a clean `python -m venv`, `--version` and `doctor` ran |
+| pip | Python 3.10 or newer | No (use a virtual environment) | First run | **Tested from PyPI** on 2026-10-04: `pip install musegauge` (Python 3.12.7) |
 | uvx | uv | No | First run | **Tested from the source folder only** (`uvx --from . musegauge`); the PyPI form is not tested |
 | Docker `slim` | Docker; for GPU the NVIDIA Container Toolkit | Usually yes | First run | **Not built here, not tested** (no Docker on the build machine) |
 | Apptainer | Apptainer | Often no | To build the `.sif` and fetch weights | **Not tested** (no Apptainer on the build machine) |
@@ -33,9 +33,7 @@ musegauge run --generated ./my_audio --prompts prompts.csv --out ./out
 
 The core depends on `uv`, so `pip install` brings it; musegauge uses it to build the plugin
 environments. The `setup` step is optional: without it, the first `run` builds the environments
-and downloads the weights. On the build machine the wheel from `uv build` was installed into a
-clean `python3 -m venv` with pip 24.2, and `musegauge --version` and `musegauge doctor` ran
-(exit 0).
+and downloads the weights. `pip install musegauge` was tested from PyPI on 2026-10-04 (Python 3.12.7).
 
 ## 2. uvx (no install)
 

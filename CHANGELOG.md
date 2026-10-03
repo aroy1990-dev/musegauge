@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 (2026-10-04)
+
+Docs fixes, project links.
+
 ## 0.1.0 (2026-10-03, not published)
 
 First version. No PyPI or TestPyPI upload and no image pushed (D7 is open). The code is under the

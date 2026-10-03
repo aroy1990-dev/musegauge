@@ -14,6 +14,11 @@ dependencies = ["uv", "pyyaml", "numpy", "soundfile"]
 [project.optional-dependencies]
 dev = ["pytest", "jsonschema", "ruff"]
 
+[project.urls]
+Homepage = "https://github.com/aroy1990-dev/musegauge"
+Source = "https://github.com/aroy1990-dev/musegauge"
+Issues = "https://github.com/aroy1990-dev/musegauge/issues"
+
 [project.scripts]
 musegauge = "musegauge.cli:main"
 
