@@ -31,7 +31,7 @@ said, what was built and why).
 | --- | --- | --- |
 | D1 | Name of the tool | `musegauge` (free on PyPI and GitHub when checked on 2026-10-03, U9) |
 | D4 | Contents of the default suite | `t2m-basic@1` (fad.vggish, fad.clap-laion-music, clapscore.laion-music, aesthetics.audiobox, reference bundled fma_pop) |
-| D7 | Owner of the container registry and where images go | nothing pushed; placeholder `ghcr.io/OWNER/musegauge:TAG` |
+| D7 | Owner of the container registry and where images go | answered 2026-10-07: published at `ghcr.io/aroy1990-dev/musegauge`, tags `0.1.2`/`slim`/`latest` (`docs/DECISIONS.md`) |
 
 D2 is answered: Apache-2.0 (`LICENSE` added and `license = "Apache-2.0"` in `pyproject.toml`
 on 2026-10-03, at Roy's request). D3 is answered: Roy's call; the source is published at
