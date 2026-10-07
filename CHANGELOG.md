@@ -18,6 +18,8 @@ move (the locks pin the environments; the doctor string is not asserted anywhere
 - The image is published at `ghcr.io/aroy1990-dev/musegauge` (tags `0.1.2`, `slim`, `latest`;
   decision D7 answered 2026-10-07). `docker pull` it and run — nothing to install but Docker.
   Nothing was pushed before 0.1.2.
+- 0.1.2 is on PyPI as well (wheel and sdist, uploaded 2026-10-07). From pip, the only visible
+  change in 0.1.2 is the clearer `doctor` wording; the other fixes live in the image.
 
 ## 0.1.1 (2026-10-04)
 

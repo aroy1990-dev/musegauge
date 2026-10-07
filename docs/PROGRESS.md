@@ -1400,3 +1400,20 @@ tests/unit/test_wrappers.py ........                                     [100%]
 exit code: 0
 ```
 
+### 0.1.2 published (2026-10-07)
+
+- The image was pushed to `ghcr.io/aroy1990-dev/musegauge` (tags `0.1.2`, `slim`, `latest`;
+  one digest, `sha256:88b57e71…`; 740 MB). The package was made public on GitHub and
+  verified: anonymous manifest GET returns 200 for all three tags, and a real
+  `docker pull ghcr.io/aroy1990-dev/musegauge:0.1.2` succeeded (D7 answered,
+  `docs/DECISIONS.md`).
+- A GitHub *Release* entry was created for `v0.1.2`
+  (https://github.com/aroy1990-dev/musegauge/releases/tag/v0.1.2). The git tag alone had
+  not shown on the releases page — a Release is a separate object from the tag.
+- `0.1.2` was uploaded to PyPI (wheel + sdist, `uv publish`), then verified via
+  `https://pypi.org/pypi/musegauge/json`: latest `0.1.2`, releases `0.1.0`, `0.1.1`, `0.1.2`.
+- Docs updated across the publish: `README.md` and `docker/README.md` are pull-first,
+  `docs/INSTALL.md` §3 was rewritten around the published image, `docs/BUILD_REPORT.md`'s
+  D7 row and `CHANGELOG.md`'s 0.1.2 section reflect the published state (commits `53cb05f`,
+  `c0d0a19`, and this one).
+
