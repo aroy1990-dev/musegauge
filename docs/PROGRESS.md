@@ -893,15 +893,18 @@ against the default-thread golden runs: `fad` differs by 1.3e-6, Audiobox by up 
 ## M7. Docker and Apptainer (and the GATE 2 network items)
 
 Date: 2026-10-03. Status: **done as far as this machine allows, waiting at GATE 3**.
+Updated 2026-10-06/07: the Docker part was executed on a separate machine that has Docker;
+see "Docker checklist executed on a Docker machine (2026-10-06/07)" at the end of this
+milestone. Apptainer remains untested.
 
 ### Section 12 checks for M7
 
 | Check | Result |
 | --- | --- |
-| `docker build --target slim`, `docker run --rm musegauge:slim doctor` | **Not run**: Docker is not installed on the build machine. `docker/Dockerfile` (targets `slim`, `full`), `docker/README.md` and `.github/workflows/docker.yml` are written. Base and uv image tags were checked through the registry APIs. |
-| Fake plugins inside `slim` with `--network none` | **Not run** (no Docker). `docker.yml` contains the step. |
-| Offline test: `setup --fetch-weights`, then `--network none --no-fetch` | **Done natively**, not in Docker: `--no-fetch` now makes the network unreachable for every plugin process (GATE 2 item 3a). All six metrics of `t2m-full` passed with exit 0, no file was added to any weight cache (82 / 82). Output below. |
-| GPU in a container | **Not tested**; `docs/INSTALL.md` says so. |
+| `docker build --target slim`, `docker run --rm musegauge:slim doctor` | **Done 2026-10-06 on a Docker machine** (Docker 27.3.1): image built (788 MB), `doctor` exit 0. Output below and in the Docker-machine record at the end of this milestone. |
+| Fake plugins inside `slim` with `--network none` | **Done 2026-10-06 on a Docker machine**: the `ci.yml` slim-image job's fake-plugin run (`fake.clip@1`, `fake.set@1`) exited 0. See the Docker-machine record. |
+| Offline test: `setup --fetch-weights`, then `--network none --no-fetch` | **Done natively** on 2026-10-03: `--no-fetch` now makes the network unreachable for every plugin process (GATE 2 item 3a). All six metrics of `t2m-full` passed with exit 0, no file was added to any weight cache (82 / 82). Output below. **Done in Docker 2026-10-06**: `setup --all --fetch-weights` into the named volume `musegauge-cache` (first attempt failed with the documented GitHub 403; retry ok), then the same offline run under `--network none --no-fetch` from that volume exited 0. See the Docker-machine record. |
+| GPU in a container | **Tested 2026-10-06** with `--gpus all` (NVIDIA Container Toolkit): `nvidia-smi` OK in `doctor`, and `torch.cuda.is_available()` True in all four plugin environments. See the Docker-machine record. |
 | Apptainer commands | **Not tested** (no Apptainer); `docs/INSTALL.md` says so. |
 
 ### GATE 2 item 3: github.com on every FAD/KAD run
@@ -1013,6 +1016,158 @@ All checks passed!
 ```
 
 GATE 3 passed: Roy said "Go" on 2026-10-03 with answers (amendments A15 to A20, `docs/DECISIONS.md`).
+
+### Docker checklist executed on a Docker machine (2026-10-06/07)
+
+The M7 Docker items were run on a second machine that has Docker, by a runner following the
+M7 checklist in the spec. Machine: Linux x86_64, 256 cores, 8x NVIDIA L40S (driver 560.35.03),
+Docker 27.3.1, ~124 GB free on `/`. Repo at tag `v0.1.1` (c36071f). Logs kept by the runner
+under `/home/roy/m7_logs/` on that machine; the excerpts below are copied from them.
+
+**1. `docker run --rm hello-world`** — OK (Docker 27.3.1).
+
+**2. Wheel and image.** The host Python is PEP 668 externally-managed and `python3 -m venv`
+lacked `ensurepip` (the README's note about a system Python without `python3-venv`); after
+`apt install python3.12-venv`, in a venv:
+
+```text
+$ pip install uv numpy soundfile
+$ uv build --wheel
+Successfully built dist/musegauge-0.1.1-py3-none-any.whl
+$ docker build -f docker/Dockerfile --target slim -t musegauge:slim .
+-> musegauge  slim  c44d50bbabb1  788MB
+```
+
+Finding (recorded, not worked around): the image's *effective* uv is 0.12.23 (gnu) at
+`/usr/local/bin/uv`, installed by pip as a dependency of the musegauge wheel; it shadows the
+Dockerfile-pinned `COPY --from=ghcr.io/astral-sh/uv:0.12.22` (`/bin/uv`, musl, reports 0.12.22).
+`doctor` therefore reports "uv: 0.12.23 at /usr/local/bin/uv".
+
+**3. `docker run --rm musegauge:slim doctor`** — exit 0:
+
+```text
+OK    platform: linux-x86_64
+OK    uv: 0.12.23 at /usr/local/bin/uv
+OK    sox: /usr/bin/sox (via PATH): /usr/bin/sox:      SoX v14.4.2
+OK    ffmpeg: /usr/bin/ffmpeg: ffmpeg version 5.1.9-0+deb12u1 Copyright (c) 2005-2026 The FFmpeg developers
+OK    MUSEGAUGE_HOME: /cache is writable; 131.9 GB free
+WARN  nvidia-smi: not found (no NVIDIA Driver; GPU metrics will run on CPU)
+OK    https://pypi.org: HTTP 200
+OK    https://huggingface.co: HTTP 200
+OK    plugin aesthetics_audiobox: lock for linux-x86_64: linux-x86_64.txt
+OK    plugin clapscore_laion: lock for linux-x86_64: linux-x86_64.txt
+OK    plugin fad_fadtk: lock for linux-x86_64: linux-x86_64.txt
+OK    plugin kad_kadtk: lock for linux-x86_64: linux-x86_64.txt
+exit code: 0
+```
+
+The `nvidia-smi` WARN appears in any container started without `--gpus` (the toolkit injects
+the driver only then); the wording "no NVIDIA Driver" is misleading on a host that has one.
+With `--gpus all` the line is OK (item 7).
+
+**4. Fake plugins inside `slim` with `--network none`** (the `ci.yml` slim-image job, copied):
+`python tests/make_fixtures.py fixtures`, then the fake-plugin run — exit 0, `results.json`
+written (5386 bytes):
+
+```text
+$ docker run --rm --network none \
+    -v "$PWD/tests/fake_plugins:/plugins:ro" -e MUSEGAUGE_PLUGIN_PATH=/plugins \
+    -v "$PWD/fixtures:/data:ro" -v "$PWD/out:/out" \
+    musegauge:slim run --generated /data/gen_small --reference /data/ref_small \
+      --metrics fake.clip@1,fake.set@1 --out /out
+musegauge: 12 clip(s) readable, 0 skipped
+musegauge: reference: 12 of 12 audio files readable
+musegauge: metric fake.clip@1: ok
+musegauge: metric fake.set@1: ok
+musegauge: wrote /out/results.json and /out/report.md
+exit code: 0
+```
+
+**5. Prime the cache: `setup --all --fetch-weights` into a named volume.** First attempt
+(after ~4 h): all four environments built, weights downloaded, but the two VGGish prefetches
+hit GitHub rate limiting — the documented failure mode of "Network use without `--no-fetch`"
+(`docs/INSTALL.md`; musegauge does not retry by itself):
+
+```text
+musegauge: prefetch fad.vggish@1: FAILED: HTTPError: HTTP Error 403: rate limit exceeded
+musegauge: prefetch kad.vggish@1: FAILED: HTTPError: HTTP Error 403: rate limit exceeded
+exit code: 10
+```
+
+(The per-prefetch records on the volume, `work/setup-*/fad.vggish_1.prefetch.json` and
+`kad.vggish_1.prefetch.json`, carry the same error.) The retry, next day, exited 0:
+
+```text
+musegauge: plugin aesthetics_audiobox: environment ready: /cache/envs/aesthetics_audiobox-76e395f1
+musegauge: prefetch aesthetics.audiobox@1: ok (4.0 s)
+musegauge: plugin clapscore_laion: environment ready: /cache/envs/clapscore_laion-a3ecbe8b
+musegauge: prefetch clapscore.laion-music@1: ok (26.2 s)
+musegauge: plugin fad_fadtk: environment ready: /cache/envs/fad_fadtk-f7a67ac7
+musegauge: prefetch fad.clap-laion-music@1: ok (82.3 s)
+musegauge: prefetch fad.encodec-emb@1: ok (2.2 s)
+musegauge: prefetch fad.vggish@1: ok (5.7 s)
+musegauge: plugin kad_kadtk: environment ready: /cache/envs/kad_kadtk-391cfe89
+musegauge: prefetch kad.clap-laion-music@1: ok (76.1 s)
+musegauge: prefetch kad.vggish@1: ok (9.9 s)
+exit code: 0
+```
+
+Volume `musegauge-cache` afterwards: 39.54 GB (`/cache` 38 GB: 4 environments, weights,
+uv-managed Pythons). The weights from the failed attempt were reused on the retry
+("cached files ...: 2" for audiobox).
+
+Finding (contradicts the docs; recorded, not silently worked around): after the setup
+container is removed, the environments on the volume are **dead** — `/cache/envs/*/bin/python`
+is a symlink to `/root/.local/share/uv/python/cpython-3.11-linux-x86_64-gnu/bin/python3.11`
+*inside the removed container*. `docker/README.md` says the cache "survives the container ...
+Later runs reuse them", and `docs/INSTALL.md` says the same; as shipped it does not hold for
+the environments, because musegauge never sets `UV_PYTHON_INSTALL_DIR` and uv keeps its
+managed Pythons outside `MUSEGAUGE_HOME`. To finish the checklist the runner removed the four
+dead environments (weights kept), rebuilt them once with
+`-e UV_PYTHON_INSTALL_DIR=/cache/uv-python`, and used that variable in every later container —
+a disclosed workaround only; no code or image was changed. A fix would belong in
+`docker/Dockerfile` (e.g. `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`) or in the docs.
+
+**6. Offline run from the volume.** Same volume, no network at all:
+
+```text
+$ docker run --rm --network none -v musegauge-cache:/cache -e UV_PYTHON_INSTALL_DIR=/cache/uv-python \
+    -v ".../fixtures:/data:ro" -v ".../out:/out" \
+    musegauge:slim run --generated /data/gen_small --prompts /data/prompts.csv \
+      --reference /data/ref_small --suite t2m-full --no-fetch --out /out
+musegauge: 12 clip(s) readable, 0 skipped
+musegauge: reference: 12 of 12 audio files readable
+musegauge: metric fad.vggish@1: ok
+musegauge: metric fad.clap-laion-music@1: ok
+musegauge: metric clapscore.laion-music@1: ok
+musegauge: metric aesthetics.audiobox@1: ok
+musegauge: metric kad.vggish@1: ok
+musegauge: metric kad.clap-laion-music@1: ok
+musegauge: wrote /out/results.json and /out/report.md
+exit code: 0
+```
+
+`results.json` 24437 bytes, `report.md` 8780 bytes, with the expected warnings
+(`UNKNOWN_LICENCE`, `TRUST_REMOTE_CODE`, `FEW_CLIPS` at 12 clips).
+
+**7. GPU in the container** (`--gpus all`, NVIDIA Container Toolkit). `doctor`:
+
+```text
+OK    nvidia-smi: /usr/bin/nvidia-smi: 6 GPU(s), first: NVIDIA L40S, 560.35.03
+exit code: 0
+```
+
+and in every plugin environment (fad 2.7.0+cu126, clapscore 2.7.0+cu126, aesthetics
+2.7.0+cu126, kad 2.5.1+cu124):
+
+```text
+cuda available: True
+device 0: NVIDIA L40S
+device count: 6
+```
+
+Observation (recorded, cause not investigated): the host has 8x L40S; the container saw 6
+with `--gpus all` while other users' GPU containers were running on the same host.
 
 ## M8. Documentation
 

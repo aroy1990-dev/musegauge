@@ -4,9 +4,16 @@ One target in `docker/Dockerfile`: **`slim`** (spec section 8.3). It holds the m
 and the system tools (sox, ffmpeg, ca-certificates, curl). There is no `full` image in 0.1
 (amendment A16; the reason is in `docs/IDEAS.md`). No model weights are ever put in an image.
 
-**Status: not built here, not tested.** The builder's machine has no Docker. Nothing in this
-file has been run. The base image tag and the uv image tag were checked through the registries'
-HTTP APIs on 2026-10-03 (`docs/VERIFIED_FACTS.md`, U7).
+**Status: built and tested 2026-10-06/07** on a separate Linux x86_64 machine with Docker 27.3.1 (the
+builder's machine has no Docker): build, `doctor`, the `ci.yml` fake-plugin run with
+`--network none`, `setup --all --fetch-weights` into a named volume, an offline
+`--network none --no-fetch` run of `t2m-full`, and GPU use with `--gpus all` all passed; log
+excerpts in `docs/PROGRESS.md` M7. One caveat found: as shipped, the environments on a
+`/cache` volume do not survive the container (`/cache/envs/*/bin/python` points into the
+removed container, because uv puts its managed Pythons outside `MUSEGAUGE_HOME`); the test
+used `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` and one rebuild as a disclosed workaround.
+The base image tag and the uv image tag were checked through the registries' HTTP APIs on
+2026-10-03 (`docs/VERIFIED_FACTS.md`, U7).
 
 ## The cache folder `/cache`
 
@@ -15,6 +22,12 @@ environments and the model weights. It must be **writable** and **mounted from o
 image** (a named volume or a host folder), so it survives the container. The first run builds the
 environments there: about **24 GB** for all four plugins, plus about 3.7 GB of weights. Later runs
 reuse them.
+
+Measured on 2026-10-06 (`docs/PROGRESS.md` M7): as shipped, the *environments* do not actually
+survive the container — `/cache/envs/*/bin/python` is a symlink into the removed container,
+because uv keeps its managed Pythons in `/root/.local/share/uv/python` unless told otherwise.
+Set `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` (and build the environments once with it) to make
+later containers reuse them; the weights are unaffected.
 
 ## Build
 
@@ -38,8 +51,9 @@ docker run --rm --gpus all \
 ```
 
 The input folders can be mounted read only: musegauge stages audio into its own folders.
-`--gpus all` needs the NVIDIA Container Toolkit on the host. GPU use inside a container is not
-tested.
+`--gpus all` needs the NVIDIA Container Toolkit on the host. GPU use inside a container was
+tested on 2026-10-06 with `--gpus all`: `torch.cuda.is_available()` was True in all four plugin
+environments (`docs/PROGRESS.md` M7).
 
 ## Offline use
 
