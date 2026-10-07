@@ -1,10 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.1.2 (2026-10-07)
 
 Docker image fixes, found when the M7 checklist was first run on a real Docker machine
-(2026-10-06/07; `docs/PROGRESS.md` M7). No metric numbers can move (the locks pin the
-environments; the doctor string is not asserted anywhere):
+(2026-10-06/07; `docs/PROGRESS.md` M7), and the first published image. No metric numbers can
+move (the locks pin the environments; the doctor string is not asserted anywhere):
 
 - `docker/Dockerfile` sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`. Before, the plugin
   environments on a `/cache` volume did not survive the container (`/cache/envs/*/bin/python`
@@ -15,6 +15,9 @@ environments; the doctor string is not asserted anywhere):
   uv 0.12.23 shadowed it through PATH. The image shrank from 788 MB to 740 MB.
 - `doctor`'s missing-nvidia-smi WARN now says "no NVIDIA driver *visible*" — in a container
   that usually means the toolkit did not inject nvidia-smi, not that the host has no driver.
+- The image is published at `ghcr.io/aroy1990-dev/musegauge` (tags `0.1.2`, `slim`, `latest`;
+  decision D7 answered 2026-10-07). `docker pull` it and run — nothing to install but Docker.
+  Nothing was pushed before 0.1.2.
 
 ## 0.1.1 (2026-10-04)
 

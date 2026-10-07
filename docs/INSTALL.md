@@ -8,7 +8,7 @@ and the numbers are the same everywhere. No way is the "main" one. (The spec als
 | --- | --- | --- | --- | --- |
 | pip | Python 3.10 or newer | No (use a virtual environment) | First run | **Tested from PyPI** on 2026-10-04: `pip install musegauge` (Python 3.12.7) |
 | uvx | uv | No | First run | **Tested from the source folder only** (`uvx --from . musegauge`); the PyPI form is not tested |
-| Docker `slim` | Docker; for GPU the NVIDIA Container Toolkit | Usually yes | First run | **Built and tested 2026-10-06/07** on a separate Docker machine (Docker 27.3.1, Linux x86_64): build, `doctor`, the fake-plugin `--network none` run, an offline `--no-fetch` run of `t2m-full`, and GPU use all passed. Testing found and fixed one bug (environments on a `/cache` volume did not survive the container; fixed on main 2026-10-07, `v0.1.1` is affected — `docs/PROGRESS.md` M7) |
+| Docker `slim` | Docker only — nothing else to install; for GPU the NVIDIA Container Toolkit | Usually yes | First run | **Published, pulled and tested 2026-10-06/07** on a separate Docker machine (Docker 27.3.1, Linux x86_64), image `ghcr.io/aroy1990-dev/musegauge:0.1.2`: build, `doctor`, the fake-plugin `--network none` run, an offline `--no-fetch` run of `t2m-full`, and GPU use all passed. One bug found in testing (environments on a `/cache` volume did not survive the container) was fixed in 0.1.2; `v0.1.1` is affected (`docs/PROGRESS.md` M7) |
 | Apptainer | Apptainer | Often no | To build the `.sif` and fetch weights | **Not tested** (no Apptainer on the build machine) |
 
 GPU in a container: **tested 2026-10-06** with `--gpus all`: `torch.cuda.is_available()` was
@@ -48,32 +48,34 @@ Tested: `uvx --from . musegauge --version` printed `musegauge 0.1.0.dev0` (the v
 
 ## 3. Docker `slim`
 
-**Built and tested 2026-10-06/07** on a separate Linux x86_64 machine with Docker 27.3.1 (the
-builder's machine has no Docker): the commands below built the image (788 MB at `v0.1.1`,
-740 MB on main after the uv fix) and passed `doctor`, the `ci.yml` fake-plugin run under
-`--network none`, an offline `--network none --no-fetch` run of `t2m-full` from a
-volume-filled cache, and the GPU check with `--gpus all`. Full log excerpts:
-`docs/PROGRESS.md` M7. Testing found one bug: the plugin environments written to a `/cache`
-volume did **not** survive the container (`/cache/envs/*/bin/python` pointed into the removed
-container, because uv's managed Pythons live outside `MUSEGAUGE_HOME`). **Fixed on main on
-2026-10-07** — the Dockerfile sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`; re-verified
-with a fresh volume and a second, offline container. On the `v0.1.1` tag, pass
-`-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` and build the environments once with it instead.
-Commands and notes: `docker/README.md`. In short:
+**Pull the published image and run — nothing to install but Docker itself.** Python, uv and
+musegauge are inside the image; for GPU the host needs only the NVIDIA Container Toolkit:
 
 ```bash
-uv build
-docker build -f docker/Dockerfile --target slim -t musegauge:slim .
+docker pull ghcr.io/aroy1990-dev/musegauge:0.1.2
 docker run --rm --gpus all -v "$PWD/audio:/data/audio:ro" -v musegauge-cache:/cache \
-  -v "$PWD/out:/out" musegauge:slim run --generated /data/audio --out /out
+  -v "$PWD/out:/out" ghcr.io/aroy1990-dev/musegauge:0.1.2 \
+  run --generated /data/audio --out /out
 ```
+
+**Tested 2026-10-06/07** on a separate Linux x86_64 machine with Docker 27.3.1 (the
+builder's machine has no Docker): this image (740 MB; 788 MB at `v0.1.1`) passed `doctor`,
+the `ci.yml` fake-plugin run under `--network none`, an offline `--network none --no-fetch`
+run of `t2m-full` from a volume-filled cache, and the GPU check with `--gpus all`. Full log
+excerpts: `docs/PROGRESS.md` M7. Testing found one bug: the plugin environments written to a
+`/cache` volume did **not** survive the container (`/cache/envs/*/bin/python` pointed into
+the removed container, because uv's managed Pythons live outside `MUSEGAUGE_HOME`). **Fixed
+in 0.1.2** (2026-10-07) — the Dockerfile sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`;
+re-verified with a fresh volume and a second, offline container. On `v0.1.1`, pass
+`-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` and build the environments once with it instead.
+More commands and notes: `docker/README.md`.
 
 The image holds only the core, uv and system tools. **`/cache` holds the plugin environments and
 the weights.** Mount a writable named volume or host folder there, from outside the image, so it
 survives the container; the first run builds about 24 GB of environments into it. No weights are
-ever put in an image. The published image name is Roy's decision (D7); docs use the placeholder
-`ghcr.io/OWNER/musegauge:TAG`. Measured on 2026-10-06, fixed on main on 2026-10-07
-(`docs/PROGRESS.md` M7): the environments on the volume now survive the container (the
+ever put in an image. The published image is `ghcr.io/aroy1990-dev/musegauge` (tags `0.1.2`,
+`slim`, `latest`; D7 answered 2026-10-07, `docs/DECISIONS.md`). Measured on 2026-10-06, fixed
+in 0.1.2 (`docs/PROGRESS.md` M7): the environments on the volume survive the container (the
 Dockerfile sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`). On the `v0.1.1` tag they did
 not; there, `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` (plus one rebuild) restores reuse
 across containers. The weights are unaffected.
@@ -81,10 +83,10 @@ across containers. The weights are unaffected.
 ## 4. Apptainer
 
 **Not tested** (no Apptainer on the build machine; U8 not checked). The commands of the spec,
-with the placeholder image name:
+with the published image name:
 
 ```bash
-apptainer build musegauge.sif docker://ghcr.io/OWNER/musegauge:TAG
+apptainer build musegauge.sif docker://ghcr.io/aroy1990-dev/musegauge:0.1.2
 apptainer run --nv --bind ./audio:/data/audio:ro --bind ./cache:/cache --bind ./out:/out \
   musegauge.sif run --generated /data/audio --out /out
 ```

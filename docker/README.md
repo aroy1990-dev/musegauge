@@ -33,7 +33,21 @@ the managed Pythons live on the volume and later containers reuse the environmen
 `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` (and build the environments once with it)
 instead; the weights are unaffected.
 
-## Build
+## Pull
+
+Published at `ghcr.io/aroy1990-dev/musegauge` — the tags `0.1.2`, `slim` and `latest` point
+at the same image. Pulling needs nothing but Docker; Python, uv and musegauge are inside:
+
+```bash
+docker pull ghcr.io/aroy1990-dev/musegauge:0.1.2
+docker tag ghcr.io/aroy1990-dev/musegauge:0.1.2 musegauge:slim   # optional short name for
+                                                                 # the examples below
+```
+
+## Build (from source)
+
+Most users should pull the published image (above). Building is for testing the exact wheel
+you just made:
 
 ```bash
 uv build                                   # makes dist/musegauge-*.whl
@@ -71,4 +85,6 @@ docker run --rm --network none -v musegauge-cache:/cache -v "$PWD/audio:/data/au
   musegauge:slim run --generated /data/audio --out /out --no-fetch
 ```
 
-The image name on a public registry is Roy's decision (D7); docs use `ghcr.io/OWNER/musegauge:TAG`.
+The image is published at `ghcr.io/aroy1990-dev/musegauge` (tags `0.1.2`, `slim`, `latest`) —
+decision D7, answered 2026-10-07 (`docs/DECISIONS.md`). The GHCR package is public; if a pull
+is denied, check the package's visibility on GitHub.

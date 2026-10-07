@@ -12,7 +12,7 @@ Choices made while building, and the defaults used for Roy's open decisions (spe
 | D4 | Default suite `t2m-basic@1`. | M0 |
 | D5 | Bundled `fma_pop` for FAD only. | M0 |
 | D6 | Python 3.11 for the real plugin environments. | M0 |
-| D7 | No image pushed. Placeholder `ghcr.io/OWNER/musegauge:TAG` in docs. | M0 |
+| D7 | Answered 2026-10-07 (Roy's call): image published at `ghcr.io/aroy1990-dev/musegauge`, tags `0.1.2`/`slim`/`latest`; nothing was pushed before 0.1.2. | M0 |
 | D8 | Linux x86_64 supported. Others as in the spec. | M0 |
 | D9 | No MERT or MuQ metrics. | M0 |
 | D10 | No telemetry. | M0 |

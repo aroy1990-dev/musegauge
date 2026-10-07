@@ -8,10 +8,24 @@ Frechet Audio Distance (fadtk), Kernel Audio Distance (kadtk), a CLAP text-audio
 tool builds by itself with uv, so tools that need different torch versions can be used together.
 One run writes a `results.json` and a short report card for a paper appendix.
 
-Version 0.1.1. Source: https://github.com/aroy1990-dev/musegauge. On PyPI. No container image is published.
+Version 0.1.2. Source: https://github.com/aroy1990-dev/musegauge. On PyPI. Container image:
+`ghcr.io/aroy1990-dev/musegauge`.
 Tested on Linux x86_64 only. Other systems are not tested.
 
 ## Quick start
+
+**Docker** (no install beyond Docker itself — Python, uv and musegauge are inside the image;
+published image `ghcr.io/aroy1990-dev/musegauge:0.1.2`, built and tested 2026-10-06/07 on a
+Linux x86_64 machine with Docker 27.3.1 — `doctor`, an offline `--network none --no-fetch`
+run and GPU use all passed; the cache-volume bug the tests uncovered was fixed in 0.1.2; see
+`docker/README.md` and `docs/PROGRESS.md` M7):
+
+```bash
+docker pull ghcr.io/aroy1990-dev/musegauge:0.1.2
+docker run --rm --gpus all -v "$PWD/my_audio:/data/audio:ro" -v musegauge-cache:/cache \
+  -v "$PWD/out:/out" ghcr.io/aroy1990-dev/musegauge:0.1.2 \
+  run --generated /data/audio --out /out
+```
 
 **pip** (Python 3.10 or newer):
 
@@ -32,10 +46,8 @@ uvx musegauge run --generated ./my_audio --out ./out
 uvx --from . musegauge --version                         # from a clone
 ```
 
-**Docker** (`slim` image; built and tested 2026-10-06/07 on a Linux x86_64 machine with
-Docker 27.3.1 — build, `doctor`, an offline `--network none --no-fetch` run and GPU use all
-passed, and the cache-volume bug the tests uncovered was fixed 2026-10-07; see
-`docker/README.md` and `docs/PROGRESS.md` M7):
+**Docker**, build it yourself from a clone (`docker/README.md` has the full commands and the
+published-image alternative):
 
 ```bash
 uv build && docker build -f docker/Dockerfile --target slim -t musegauge:slim .
