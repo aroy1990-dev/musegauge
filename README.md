@@ -34,7 +34,8 @@ uvx --from . musegauge --version                         # from a clone
 
 **Docker** (`slim` image; built and tested 2026-10-06/07 on a Linux x86_64 machine with
 Docker 27.3.1 — build, `doctor`, an offline `--network none --no-fetch` run and GPU use all
-passed; see `docker/README.md` and `docs/PROGRESS.md` M7):
+passed, and the cache-volume bug the tests uncovered was fixed 2026-10-07; see
+`docker/README.md` and `docs/PROGRESS.md` M7):
 
 ```bash
 uv build && docker build -f docker/Dockerfile --target slim -t musegauge:slim .

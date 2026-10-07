@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+Docker image fixes, found when the M7 checklist was first run on a real Docker machine
+(2026-10-06/07; `docs/PROGRESS.md` M7). No metric numbers can move (the locks pin the
+environments; the doctor string is not asserted anywhere):
+
+- `docker/Dockerfile` sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`. Before, the plugin
+  environments on a `/cache` volume did not survive the container (`/cache/envs/*/bin/python`
+  pointed into the removed container), so a later container found dead environments. Re-verified
+  with a fresh volume and a second, `--network none` container.
+- The wheel's pip-installed `uv`/`uvx` scripts are removed from `/usr/local/bin` after the
+  install, so the Dockerfile-pinned uv (0.12.22) is the effective one; before, the wheel's
+  uv 0.12.23 shadowed it through PATH. The image shrank from 788 MB to 740 MB.
+- `doctor`'s missing-nvidia-smi WARN now says "no NVIDIA driver *visible*" — in a container
+  that usually means the toolkit did not inject nvidia-smi, not that the host has no driver.
+
 ## 0.1.1 (2026-10-04)
 
 Docs fixes, project links.

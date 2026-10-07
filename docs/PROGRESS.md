@@ -895,7 +895,8 @@ against the default-thread golden runs: `fad` differs by 1.3e-6, Audiobox by up 
 Date: 2026-10-03. Status: **done as far as this machine allows, waiting at GATE 3**.
 Updated 2026-10-06/07: the Docker part was executed on a separate machine that has Docker;
 see "Docker checklist executed on a Docker machine (2026-10-06/07)" at the end of this
-milestone. Apptainer remains untested.
+milestone. Apptainer remains untested. The findings from that run became fixes on 2026-10-07;
+see "Fixes after the M7 checklist (2026-10-07)" below.
 
 ### Section 12 checks for M7
 
@@ -1127,6 +1128,7 @@ dead environments (weights kept), rebuilt them once with
 `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python`, and used that variable in every later container —
 a disclosed workaround only; no code or image was changed. A fix would belong in
 `docker/Dockerfile` (e.g. `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`) or in the docs.
+(Done on main on 2026-10-07; see "Fixes after the M7 checklist (2026-10-07)" below.)
 
 **6. Offline run from the volume.** Same volume, no network at all:
 
@@ -1168,6 +1170,62 @@ device count: 6
 
 Observation (recorded, cause not investigated): the host has 8x L40S; the container saw 6
 with `--gpus all` while other users' GPU containers were running on the same host.
+
+### Fixes after the M7 checklist (2026-10-07)
+
+After the checklist above, Roy said "fix everything and push". The three actionable findings
+became fixes on main on 2026-10-07; the image was rebuilt and re-verified on the same machine.
+
+- **F4, dead environments on a volume (the doc contradiction):** `docker/Dockerfile` now sets
+  `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`, so uv's managed Pythons live inside
+  `MUSEGAUGE_HOME` and the environments survive the container, as the docs say.
+- **F1, uv shadowing:** the wheel depends on uv, and pip put its console scripts in
+  `/usr/local/bin`, which shadowed the pinned `/bin/uv` through PATH (effective uv 0.12.23
+  over the pin's 0.12.22). The Dockerfile now removes those scripts after the install, so the
+  pinned uv is the effective one. Its musl build runs fine on the glibc base (checked:
+  `/bin/uv --version` in the rebuilt image prints `uv 0.12.22`, exit 0). The image shrank
+  from 788 MB to 740 MB.
+- **F3, doctor wording:** the WARN for a missing nvidia-smi now says "no NVIDIA driver
+  *visible*" — in a container that usually means the NVIDIA Container Toolkit did not inject
+  nvidia-smi, not that the host has no driver. No test asserts the old string (checked);
+  the four doctor unit tests pass with the new one.
+
+Re-verification with the rebuilt image, a **fresh** volume (`musegauge-cache-v2`) and **no**
+`-e UV_PYTHON_INSTALL_DIR` anywhere:
+
+```text
+$ docker run --rm musegauge:slim doctor
+OK    uv: 0.12.22 at /usr/bin/uv
+... (all OK, the expected nvidia-smi WARN without --gpus) ...
+exit code: 0
+
+# setup --all --fetch-weights into the fresh volume succeeded on attempt 1 (no 403 this
+# time); volume 39.54 GB. The environment Pythons now point INTO the volume:
+$ ls -l /cache/envs/*/bin/python
+/cache/envs/aesthetics_audiobox-76e395f1/bin/python -> /cache/uv-python/cpython-3.11-linux-x86_64-gnu/bin/python3.11
+/cache/envs/clapscore_laion-a3ecbe8b/bin/python -> /cache/uv-python/cpython-3.11-linux-x86_64-gnu/bin/python3.11
+/cache/envs/fad_fadtk-f7a67ac7/bin/python -> /cache/uv-python/cpython-3.11-linux-x86_64-gnu/bin/python3.11
+/cache/envs/kad_kadtk-391cfe89/bin/python -> /cache/uv-python/cpython-3.11-linux-x86_64-gnu/bin/python3.11
+
+# a SECOND container, --network none, no -e flags:
+$ docker run --rm --network none -v musegauge-cache-v2:/cache \
+    -v fixtures:/data:ro -v out:/out musegauge:slim run --generated /data/gen_small \
+    --prompts /data/prompts.csv --reference /data/ref_small --suite t2m-full --no-fetch --out /out
+musegauge: metric fad.vggish@1: ok
+musegauge: metric fad.clap-laion-music@1: ok
+musegauge: metric clapscore.laion-music@1: ok
+musegauge: metric aesthetics.audiobox@1: ok
+musegauge: metric kad.vggish@1: ok
+musegauge: metric kad.clap-laion-music@1: ok
+musegauge: wrote /out/results.json and /out/report.md
+exit code: 0
+```
+
+`results.json` 24436 bytes, `report.md` 8780 bytes, the same expected fixture warnings as
+before. The `ci.yml` fake-plugin run under `--network none` was also repeated against the
+rebuilt image on the fresh volume (exit 0). The doctor unit tests pass 4/4 (one of them needs
+an exec-mounted pytest tmpdir — this host's `/tmp` is mounted `noexec`, and that test fails
+on the unmodified tag too, i.e. it is a host quirk, not the change).
 
 ## M8. Documentation
 

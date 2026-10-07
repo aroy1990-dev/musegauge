@@ -23,13 +23,26 @@ RUN apt-get update \
 COPY --from=ghcr.io/astral-sh/uv:0.12.22 /uv /uvx /bin/
 
 # musegauge from the wheel in the build context, never from PyPI, so CI tests the exact wheel.
+# The wheel depends on uv, and pip puts its console scripts in /usr/local/bin, which shadows
+# the pinned /bin/uv through PATH (found when the 0.1.1 image was first built and run on
+# 2026-10-06: the effective uv was 0.12.23 while the pin says 0.12.22). Remove the scripts
+# so the pinned uv is the one that runs; its musl build executes fine on this glibc base
+# (verified 2026-10-07: `/bin/uv --version` in the image printed 0.12.22, exit 0).
 COPY dist/*.whl /tmp/wheels/
-RUN pip install --no-cache-dir /tmp/wheels/*.whl && rm -rf /tmp/wheels
+RUN pip install --no-cache-dir /tmp/wheels/*.whl \
+ && rm -f /usr/local/bin/uv /usr/local/bin/uvx \
+ && rm -rf /tmp/wheels
 
 # /cache holds the plugin environments (about 24 GB once all are built) and the weights. Mount a
 # writable volume or folder there from outside the image. It is world-writable so the image also
 # works with `docker run --user`.
 RUN mkdir -p /cache && chmod 777 /cache
 ENV MUSEGAUGE_HOME=/cache
+# uv must keep its managed Pythons inside /cache. Without this, /cache/envs/*/bin/python is a
+# symlink into /root/.local/share/uv/python of the container that built the environment, and
+# every later container finds dead environments on the volume (found 2026-10-06,
+# docs/PROGRESS.md M7). With this, the environments survive the container and later runs
+# reuse them, as docker/README.md says.
+ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python
 ENTRYPOINT ["musegauge"]
 CMD ["--help"]

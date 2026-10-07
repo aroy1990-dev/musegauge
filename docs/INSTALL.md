@@ -8,7 +8,7 @@ and the numbers are the same everywhere. No way is the "main" one. (The spec als
 | --- | --- | --- | --- | --- |
 | pip | Python 3.10 or newer | No (use a virtual environment) | First run | **Tested from PyPI** on 2026-10-04: `pip install musegauge` (Python 3.12.7) |
 | uvx | uv | No | First run | **Tested from the source folder only** (`uvx --from . musegauge`); the PyPI form is not tested |
-| Docker `slim` | Docker; for GPU the NVIDIA Container Toolkit | Usually yes | First run | **Built and tested 2026-10-06/07** on a separate Docker machine (Docker 27.3.1, Linux x86_64): build, `doctor`, the fake-plugin `--network none` run, an offline `--no-fetch` run of `t2m-full`, and GPU use all passed. One caveat: as shipped, the plugin environments on a `/cache` volume do not survive the container (`docs/PROGRESS.md` M7) |
+| Docker `slim` | Docker; for GPU the NVIDIA Container Toolkit | Usually yes | First run | **Built and tested 2026-10-06/07** on a separate Docker machine (Docker 27.3.1, Linux x86_64): build, `doctor`, the fake-plugin `--network none` run, an offline `--no-fetch` run of `t2m-full`, and GPU use all passed. Testing found and fixed one bug (environments on a `/cache` volume did not survive the container; fixed on main 2026-10-07, `v0.1.1` is affected — `docs/PROGRESS.md` M7) |
 | Apptainer | Apptainer | Often no | To build the `.sif` and fetch weights | **Not tested** (no Apptainer on the build machine) |
 
 GPU in a container: **tested 2026-10-06** with `--gpus all`: `torch.cuda.is_available()` was
@@ -49,14 +49,17 @@ Tested: `uvx --from . musegauge --version` printed `musegauge 0.1.0.dev0` (the v
 ## 3. Docker `slim`
 
 **Built and tested 2026-10-06/07** on a separate Linux x86_64 machine with Docker 27.3.1 (the
-builder's machine has no Docker): the commands below built the image (788 MB) and passed
-`doctor`, the `ci.yml` fake-plugin run under `--network none`, an offline
-`--network none --no-fetch` run of `t2m-full` from a volume-filled cache, and the GPU check
-with `--gpus all`. Full log excerpts: `docs/PROGRESS.md` M7. One measured caveat: as shipped,
-the plugin environments written to a `/cache` volume do **not** survive the container —
-`/cache/envs/*/bin/python` points into the removed container, because uv's managed Pythons
-live outside `MUSEGAUGE_HOME`; the test used `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` and
-one rebuild as a disclosed workaround. Commands and notes: `docker/README.md`. In short:
+builder's machine has no Docker): the commands below built the image (788 MB at `v0.1.1`,
+740 MB on main after the uv fix) and passed `doctor`, the `ci.yml` fake-plugin run under
+`--network none`, an offline `--network none --no-fetch` run of `t2m-full` from a
+volume-filled cache, and the GPU check with `--gpus all`. Full log excerpts:
+`docs/PROGRESS.md` M7. Testing found one bug: the plugin environments written to a `/cache`
+volume did **not** survive the container (`/cache/envs/*/bin/python` pointed into the removed
+container, because uv's managed Pythons live outside `MUSEGAUGE_HOME`). **Fixed on main on
+2026-10-07** — the Dockerfile sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`; re-verified
+with a fresh volume and a second, offline container. On the `v0.1.1` tag, pass
+`-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` and build the environments once with it instead.
+Commands and notes: `docker/README.md`. In short:
 
 ```bash
 uv build
@@ -69,10 +72,11 @@ The image holds only the core, uv and system tools. **`/cache` holds the plugin 
 the weights.** Mount a writable named volume or host folder there, from outside the image, so it
 survives the container; the first run builds about 24 GB of environments into it. No weights are
 ever put in an image. The published image name is Roy's decision (D7); docs use the placeholder
-`ghcr.io/OWNER/musegauge:TAG`. Measured on 2026-10-06 (`docs/PROGRESS.md` M7): as shipped, the
-environments on the volume do not survive the container (`/cache/envs/*/bin/python` points into
-the removed container); `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` (plus one rebuild) fixes
-reuse across containers. The weights are unaffected.
+`ghcr.io/OWNER/musegauge:TAG`. Measured on 2026-10-06, fixed on main on 2026-10-07
+(`docs/PROGRESS.md` M7): the environments on the volume now survive the container (the
+Dockerfile sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`). On the `v0.1.1` tag they did
+not; there, `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` (plus one rebuild) restores reuse
+across containers. The weights are unaffected.
 
 ## 4. Apptainer
 

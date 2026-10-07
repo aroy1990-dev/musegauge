@@ -349,7 +349,9 @@ def doctor_checks() -> list[tuple[str, str, str]]:
         count = _first_line([smi, "--query-gpu=count", "--format=csv,noheader"])
         checks.append(("OK", "nvidia-smi", f"{smi}: {count} GPU(s), first: {gpus}"))
     else:
-        checks.append(("WARN", "nvidia-smi", "not found (no NVIDIA driver; GPU metrics will run on CPU)"))
+        checks.append(
+            ("WARN", "nvidia-smi", "not found (no NVIDIA driver visible; GPU metrics will run on CPU)")
+        )
     for url in ("https://pypi.org", "https://huggingface.co"):
         ok, detail = _reachable(url)
         checks.append(("OK" if ok else "WARN", url, detail if ok else f"not reachable: {detail}"))

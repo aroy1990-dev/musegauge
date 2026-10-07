@@ -8,12 +8,13 @@ and the system tools (sox, ffmpeg, ca-certificates, curl). There is no `full` im
 builder's machine has no Docker): build, `doctor`, the `ci.yml` fake-plugin run with
 `--network none`, `setup --all --fetch-weights` into a named volume, an offline
 `--network none --no-fetch` run of `t2m-full`, and GPU use with `--gpus all` all passed; log
-excerpts in `docs/PROGRESS.md` M7. One caveat found: as shipped, the environments on a
-`/cache` volume do not survive the container (`/cache/envs/*/bin/python` points into the
-removed container, because uv puts its managed Pythons outside `MUSEGAUGE_HOME`); the test
-used `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` and one rebuild as a disclosed workaround.
-The base image tag and the uv image tag were checked through the registries' HTTP APIs on
-2026-10-03 (`docs/VERIFIED_FACTS.md`, U7).
+excerpts in `docs/PROGRESS.md` M7. Testing found one bug — the environments on a `/cache`
+volume did not survive the container — and one pin violation — the wheel's uv 0.12.23
+shadowed the pinned 0.12.22 — both **fixed on main on 2026-10-07** and re-verified with a
+rebuilt image and a fresh volume (`docs/PROGRESS.md` M7, "Fixes after the M7 checklist").
+The `v0.1.1` tag carries both; there, pass `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` and
+build the environments once with it. The base image tag and the uv image tag were checked
+through the registries' HTTP APIs on 2026-10-03 (`docs/VERIFIED_FACTS.md`, U7).
 
 ## The cache folder `/cache`
 
@@ -23,11 +24,14 @@ image** (a named volume or a host folder), so it survives the container. The fir
 environments there: about **24 GB** for all four plugins, plus about 3.7 GB of weights. Later runs
 reuse them.
 
-Measured on 2026-10-06 (`docs/PROGRESS.md` M7): as shipped, the *environments* do not actually
-survive the container — `/cache/envs/*/bin/python` is a symlink into the removed container,
-because uv keeps its managed Pythons in `/root/.local/share/uv/python` unless told otherwise.
-Set `-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` (and build the environments once with it) to make
-later containers reuse them; the weights are unaffected.
+Measured on 2026-10-06 (`docs/PROGRESS.md` M7): the *environments* did not survive the
+container — `/cache/envs/*/bin/python` was a symlink into the removed container, because uv
+keeps its managed Pythons in `/root/.local/share/uv/python` unless told otherwise. **Fixed on
+main on 2026-10-07**: the Dockerfile sets `ENV UV_PYTHON_INSTALL_DIR=/cache/uv-python`, so
+the managed Pythons live on the volume and later containers reuse the environments
+(re-verified with a fresh volume and a second, offline container). On the `v0.1.1` tag, pass
+`-e UV_PYTHON_INSTALL_DIR=/cache/uv-python` (and build the environments once with it)
+instead; the weights are unaffected.
 
 ## Build
 
